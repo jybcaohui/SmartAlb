@@ -8,16 +8,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Button
 import com.smart.album.utils.OkhttpUtil
 import com.github.ybq.android.spinkit.SpinKitView
 import org.json.JSONObject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity_base : AppCompatActivity() {
 
     private lateinit var spinKit: SpinKitView
     private lateinit var tvSetting: TextView
-    private lateinit var btnCarousel: Button
     private var curRate: Double = 0.0
 
     private var inCurStr = ""
@@ -27,17 +25,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         tvSetting = findViewById(R.id.setting)
-        btnCarousel = findViewById(R.id.btnCarousel)
 
         tvSetting.setOnClickListener{
-            startActivity(Intent(this, CarouselActivity::class.java))
 //            openUrlInBrowser(this,"https://sites.google.com/view/sismaprivacy/home")
+
         }
 
-        btnCarousel.setOnClickListener {
-            val intent = Intent(this, CarouselActivity::class.java)
-            startActivity(intent)
-        }
     }
 
 
