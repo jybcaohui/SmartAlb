@@ -41,6 +41,8 @@ class CarouselActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 currentPage = position
                 applyAnimation()
+
+                adapter.showAnimat()
             }
         })
 

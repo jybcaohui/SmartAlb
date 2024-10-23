@@ -14,6 +14,9 @@ class PanningImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     private var onPanningEndListener: OnPanningEndListener? = null
+    private var intrinsicWidth = 0
+    private var intrinsicHeight = 0
+    private var scale = 0.0f
 
     init {
         scaleType = ScaleType.MATRIX
@@ -24,8 +27,8 @@ class PanningImageView @JvmOverloads constructor(
 
         // 获取图片的实际尺寸
         val drawable = drawable ?: return
-        val intrinsicWidth = drawable.intrinsicWidth
-        val intrinsicHeight = drawable.intrinsicHeight
+        intrinsicWidth = drawable.intrinsicWidth
+        intrinsicHeight = drawable.intrinsicHeight
 
         // 获取屏幕尺寸
         val viewWidth = MeasureSpec.getSize(widthMeasureSpec)
@@ -34,7 +37,7 @@ class PanningImageView @JvmOverloads constructor(
         // 计算缩放比例
         val scaleX = viewWidth.toFloat() / intrinsicWidth
         val scaleY = viewHeight.toFloat() / intrinsicHeight
-        var scale = scaleX
+        scale = scaleX
         if (scaleX > scaleY){
             scale = scaleX
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -58,7 +61,12 @@ class PanningImageView @JvmOverloads constructor(
         startPanningIfNecessary(intrinsicWidth, intrinsicHeight, scale)
     }
 
-    private fun startPanningIfNecessary(drawableWidth: Int, drawableHeight: Int, scale: Float) {
+    public fun startAnimat(): Boolean{
+        //启动平移动画
+        return startPanningIfNecessary(intrinsicWidth, intrinsicHeight, scale)
+    }
+
+    private fun startPanningIfNecessary(drawableWidth: Int, drawableHeight: Int, scale: Float): Boolean {
         val viewWidth = width
         val viewHeight = height
 
@@ -105,7 +113,11 @@ class PanningImageView @JvmOverloads constructor(
                 override fun onAnimationRepeat(animation: Animation?) {}
             })
             startAnimation(animation)
+            return true
+        } else {
+            return false
         }
+
     }
 
     fun setOnPanningEndListener(listener: OnPanningEndListener) {

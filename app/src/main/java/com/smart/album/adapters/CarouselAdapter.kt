@@ -5,18 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.smart.album.R
 import com.smart.album.models.CarouselItem
 import com.smart.album.views.PanningImageView
 
+
 class CarouselAdapter(private val items: List<CarouselItem>) :
     RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder>() {
+        private var holder: CarouselViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarouselViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_carousel, parent, false)
-        return CarouselViewHolder(view)
+        holder = CarouselViewHolder(view)
+        return holder as CarouselViewHolder
     }
 
     override fun onBindViewHolder(holder: CarouselViewHolder, position: Int) {
@@ -26,14 +30,20 @@ class CarouselAdapter(private val items: List<CarouselItem>) :
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
+    fun showAnimat() {
+//        holder?.imageView?.startAnimat()
+    }
+
     class CarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageView: PanningImageView = itemView.findViewById(R.id.carouselImage)
-        private val textView: TextView = itemView.findViewById(R.id.carouselText)
+        val imageView: PanningImageView = itemView.findViewById(R.id.carouselImage)
+        val textView: TextView = itemView.findViewById(R.id.carouselText)
+
 
         fun bind(item: CarouselItem) {
             Glide.with(itemView.context)
                 .load(item.imageUrl)
                 .into(imageView)
+//            imageView.startAnimat()
             textView.text = item.description
         }
     }
