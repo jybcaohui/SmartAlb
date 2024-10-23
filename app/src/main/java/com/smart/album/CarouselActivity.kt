@@ -35,7 +35,7 @@ class CarouselActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         adapter = CarouselAdapter(carouselItems)
         viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = 3 // 预加载3个页面
+        viewPager.offscreenPageLimit = 1 // 预加载3个页面
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -54,9 +54,9 @@ class CarouselActivity : AppCompatActivity() {
                     currentPage = 0
                 }
                 viewPager.setCurrentItem(currentPage++, true)
-                handler.postDelayed(this, 8000)
+                handler.postDelayed(this, 3000)
             }
-        }, 8000)
+        }, 3000)
     }
 
     fun changeAnimation(view: View) {
