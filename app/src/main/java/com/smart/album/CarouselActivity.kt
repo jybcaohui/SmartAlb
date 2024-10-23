@@ -20,6 +20,7 @@ class CarouselActivity : AppCompatActivity() {
     private var animationType = AnimationType.FADE
 
     private val carouselItems = listOf(
+        CarouselItem("https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg", "Image 0"),
         CarouselItem("https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg", "Image 1"),
         CarouselItem("https://file.nbfox.com/wp-content/uploads/2020/04/1665_Girl_with_a_Pearl_Earring_nbfox.jpg", "Image 2"),
         CarouselItem("https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg", "Image 3"),
@@ -53,9 +54,9 @@ class CarouselActivity : AppCompatActivity() {
                     currentPage = 0
                 }
                 viewPager.setCurrentItem(currentPage++, true)
-                handler.postDelayed(this, 3000)
+                handler.postDelayed(this, 8000)
             }
-        }, 3000)
+        }, 8000)
     }
 
     fun changeAnimation(view: View) {
