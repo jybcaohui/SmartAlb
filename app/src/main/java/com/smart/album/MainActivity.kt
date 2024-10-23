@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         tvSetting.setOnClickListener{
 //            openUrlInBrowser(this,"https://sites.google.com/view/sismaprivacy/home")
-
+            val intent = Intent(this, CarouselActivity::class.java)
+            startActivity(intent)
         }
 
         val slideImageView = findViewById<SlideImageView>(R.id.panningImageView)
