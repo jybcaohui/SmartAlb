@@ -15,7 +15,7 @@ class BannerActivity : AppCompatActivity() {
     private lateinit var imageUrls: List<String>
     private var handler: Handler? = null
     private var runnable: Runnable? = null
-    private var autoScrollInterval: Long = 5000 // 3 seconds
+    private var autoScrollInterval: Long = 6000 // 3 seconds
     private var animationType = AnimationType.FADE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +34,9 @@ class BannerActivity : AppCompatActivity() {
 
         // 设置适配器
         viewPager.adapter = ImagePagerAdapter(this, imageUrls)
+        viewPager.isUserInputEnabled = false//禁止手动滑动
+
+        handler = Handler(Looper.getMainLooper())
 
         // 设置自动滑动
         startAutoScroll()
@@ -43,6 +46,7 @@ class BannerActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 applyAnimation()
+//                scrollNext()
 //                if (position == 0) {
 //                    viewPager.setCurrentItem(imageUrls.size - 2, false)
 //                } else if (position == imageUrls.size - 1) {
@@ -71,7 +75,6 @@ class BannerActivity : AppCompatActivity() {
     }
 
     private fun startAutoScroll() {
-        handler = Handler(Looper.getMainLooper())
         runnable = Runnable {
             val currentPosition = viewPager.currentItem
             val nextPosition = (currentPosition + 1) % imageUrls.size
@@ -79,6 +82,16 @@ class BannerActivity : AppCompatActivity() {
             handler?.postDelayed(runnable!!, autoScrollInterval)
         }
         handler?.postDelayed(runnable!!, autoScrollInterval)
+    }
+
+    private fun scrollNext(){
+        // 延时3秒后执行任务
+        handler?.postDelayed({
+            val currentPosition = viewPager.currentItem
+            val nextPosition = (currentPosition + 1) % imageUrls.size
+            viewPager.setCurrentItem(nextPosition, true)
+        }, 6000) // 3000 毫秒 = 3 秒
+
     }
 
     override fun onDestroy() {
