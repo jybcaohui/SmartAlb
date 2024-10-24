@@ -17,5 +17,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ConverterTool"
+rootProject.name = "SmartAlb"
 include ':app'
