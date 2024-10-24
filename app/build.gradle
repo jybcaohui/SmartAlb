@@ -11,10 +11,28 @@ android {
         applicationId "com.smart.album"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
-
+        versionCode 100
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+            keyAlias 'key0'
+            keyPassword 'smartabc'
+            storeFile file('keystore.jks')
+            storePassword 'smartabc'
+        }
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+            keyAlias 'key0'
+            keyPassword 'smartabc'
+            storeFile file('keystore.jks')
+            storePassword 'smartabc'
+        }
     }
 
     buildTypes {
@@ -29,6 +47,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "smartalb_${variant.versionName}.apk"
+        }
     }
 }
 
