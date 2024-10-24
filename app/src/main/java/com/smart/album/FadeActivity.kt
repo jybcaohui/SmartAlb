@@ -1,22 +1,15 @@
 package com.smart.album
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.view.Window
-import android.view.WindowInsets
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
 
 
-class BannerActivity : AppCompatActivity() {
+class FadeActivity : BaseActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var imageUrls: List<String>
     private var handler: Handler? = null
@@ -27,37 +20,11 @@ class BannerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 设置主题为无标题栏和全屏
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        setNoTitle()
+        setContentView(R.layout.activity_fade)
+        setStatusBar()
 
-        setContentView(R.layout.activity_banner)
-
-        // 隐藏状态栏和导航栏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.navigationBars())
-        }
-
-        // 保持屏幕常亮
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        // 确保在API 21以上版本中应用
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setupTransparentStatusBar()
-        }
-
+        handler = Handler(Looper.getMainLooper())
         viewPager = findViewById(R.id.viewPager)
 
         // 图片 URL 列表
@@ -67,12 +34,10 @@ class BannerActivity : AppCompatActivity() {
             "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
             "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
         )
-
         // 设置适配器
         viewPager.adapter = ImagePagerAdapter(this, imageUrls)
         viewPager.isUserInputEnabled = false//禁止手动滑动
 
-        handler = Handler(Looper.getMainLooper())
 
         // 设置自动滑动
         startAutoScroll()
@@ -135,10 +100,6 @@ class BannerActivity : AppCompatActivity() {
         handler?.removeCallbacks(runnable!!)
     }
 
-    enum class AnimationType {
-        FADE, SLIDE, CROSS_FADE
-    }
-
     private fun createPageTransformer(): ViewPager2.PageTransformer {
         return ViewPager2.PageTransformer { page, position ->
             when (animationType) {
@@ -164,26 +125,5 @@ class BannerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupTransparentStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            window.attributes.layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        }
-        window.apply {
-            // 清除FLAG_TRANSLUCENT_STATUS flag
-            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-
-            // 添加 FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag到window
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-
-            // 更新系统UI可见性以保持沉浸模式
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-
-            // 设置状态栏颜色为透明
-            statusBarColor = Color.TRANSPARENT
-        }
-    }
 }
 
