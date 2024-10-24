@@ -16,7 +16,8 @@ class PanningImageView @JvmOverloads constructor(
     private var onPanningEndListener: OnPanningEndListener? = null
     private var intrinsicWidth = 0
     private var intrinsicHeight = 0
-    private var scale = 0.0f
+    private var viewWidth = 0//初始控件宽高MATCH_PARENT
+    private var viewHeight = 0
 
     init {
         scaleType = ScaleType.MATRIX
@@ -37,53 +38,39 @@ class PanningImageView @JvmOverloads constructor(
         // 计算缩放比例
         val scaleX = viewWidth.toFloat() / intrinsicWidth
         val scaleY = viewHeight.toFloat() / intrinsicHeight
-        scale = scaleX
         if (scaleX > scaleY){
-            scale = scaleX
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
-            scale = scaleY
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         }
 
         // 设置新的测量尺寸
-//        setMeasuredDimension(viewWidth, viewHeight)
         setMeasuredDimension(layoutParams.width, layoutParams.height)
 
-        // 缩放图片
-        val matrix = imageMatrix
-        matrix.setScale(scale, scale)
-        setImageMatrix(matrix)
-
         // 启动平移动画
-        startPanningIfNecessary(intrinsicWidth, intrinsicHeight, scale)
+        startPanningIfNecessary(intrinsicWidth, intrinsicHeight)
     }
 
-    public fun startAnimat(): Boolean{
-        //启动平移动画
-        return startPanningIfNecessary(intrinsicWidth, intrinsicHeight, scale)
-    }
 
-    private fun startPanningIfNecessary(drawableWidth: Int, drawableHeight: Int, scale: Float): Boolean {
-        val viewWidth = width
-        val viewHeight = height
-
-        val scaledDrawableWidth = drawableWidth * scale
-        val scaledDrawableHeight = drawableHeight * scale
-
-        var fromXDelta = 0f
-        var toXDelta = 0f
-        var fromYDelta = 0f
-        var toYDelta = 0f
-
-        if (scaledDrawableWidth > viewWidth) {
-            toXDelta = (viewWidth - scaledDrawableWidth).toFloat()
+    private fun startPanningIfNecessary(drawableWidth: Int, drawableHeight: Int): Boolean {
+        if(viewWidth == 0 || viewHeight == 0){
+            viewWidth = width
+            viewHeight = height
         }
 
-        if (scaledDrawableHeight > viewHeight) {
-            toYDelta = (viewHeight - scaledDrawableHeight).toFloat()
+        val fromXDelta = 0f
+        var toXDelta = 0f
+        val fromYDelta = 0f
+        var toYDelta = 0f
+
+        if (drawableWidth > viewWidth) {
+            toXDelta = (viewWidth - drawableWidth).toFloat()
+        }
+
+        if (drawableHeight > viewHeight) {
+            toYDelta = (viewHeight - drawableHeight).toFloat()
         }
 
         if (toXDelta != 0f || toYDelta != 0f) {
@@ -95,11 +82,12 @@ class PanningImageView @JvmOverloads constructor(
             var distance = 0.0
             if(toXDelta != 0f){
                 distance = context.pxToDp(abs(toXDelta)).toDouble()
+                duration =  (ceil(distance / 20.0) * 1000).toInt()//控制横向移动速度，每秒移动30dp
             }
             if(toYDelta != 0f){
                 distance = context.pxToDp(abs(toYDelta)).toDouble()
+                duration =  (ceil(distance / 40.0) * 1000).toInt()//控制纵向移动速度，每秒移动60dp
             }
-            duration =  (ceil(distance / 30.0) * 1000).toInt()//控制移动速度，每秒移动30dp
 
             animation.duration = duration.toLong() // 动画持续时间
             animation.fillAfter = true

@@ -30,9 +30,6 @@ class CarouselAdapter(private val items: List<CarouselItem>) :
 
     override fun getItemCount(): Int = Int.MAX_VALUE
 
-    fun showAnimat() {
-//        holder?.imageView?.startAnimat()
-    }
 
     class CarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: PanningImageView = itemView.findViewById(R.id.carouselImage)

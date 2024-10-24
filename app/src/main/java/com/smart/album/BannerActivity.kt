@@ -3,70 +3,53 @@ package com.smart.album
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
-import com.smart.album.adapters.CarouselAdapter
-import com.smart.album.models.CarouselItem
+import com.smart.album.adapters.ImagePagerAdapter
 
-class CarouselActivity : AppCompatActivity() {
 
+class BannerActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: CarouselAdapter
-    private val handler = Handler(Looper.getMainLooper())
-    private var currentPage = 0
+    private lateinit var imageUrls: List<String>
+    private var handler: Handler? = null
+    private var runnable: Runnable? = null
+    private var autoScrollInterval: Long = 5000 // 3 seconds
     private var animationType = AnimationType.FADE
-
-    private val carouselItems = listOf(
-        CarouselItem("https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg", "Image 0"),
-        CarouselItem("https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg", "Image 1"),
-        CarouselItem("https://file.nbfox.com/wp-content/uploads/2020/04/1665_Girl_with_a_Pearl_Earring_nbfox.jpg", "Image 2"),
-        CarouselItem("https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg", "Image 3"),
-        CarouselItem("https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg", "Image 4"),
-        CarouselItem("https://k.sinaimg.cn/n/collect/crawl/20160224/HK7h-fxprucu3187034.jpg/w700d1q75cms.jpg", "Image 5")
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_carousel)
+        setContentView(R.layout.activity_banner)
 
         viewPager = findViewById(R.id.viewPager)
-        adapter = CarouselAdapter(carouselItems)
-        viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = 1 // 预加载3个页面
 
+        // 图片 URL 列表
+        imageUrls = listOf(
+            "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
+            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
+            "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
+            "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
+        )
+
+        // 设置适配器
+        viewPager.adapter = ImagePagerAdapter(this, imageUrls)
+
+        // 设置自动滑动
+        startAutoScroll()
+
+        // 处理边界情况
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                currentPage = position
+                super.onPageSelected(position)
                 applyAnimation()
-
+//                if (position == 0) {
+//                    viewPager.setCurrentItem(imageUrls.size - 2, false)
+//                } else if (position == imageUrls.size - 1) {
+//                    viewPager.setCurrentItem(1, false)
+//                }
             }
         })
-
-        startAutoScroll()
-    }
-
-    private fun startAutoScroll() {
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                if (currentPage == carouselItems.size) {
-                    currentPage = 0
-                }
-                viewPager.setCurrentItem(currentPage++, true)
-                handler.postDelayed(this, 3000)
-            }
-        }, 3000)
-    }
-
-    fun changeAnimation(view: View) {
-        animationType = when (animationType) {
-            AnimationType.FADE -> AnimationType.SLIDE
-            AnimationType.SLIDE -> AnimationType.CROSS_FADE
-            AnimationType.CROSS_FADE -> AnimationType.FADE
-        }
-        applyAnimation()
     }
 
     private fun applyAnimation() {
@@ -75,7 +58,7 @@ class CarouselActivity : AppCompatActivity() {
             AnimationType.SLIDE -> AnimationUtils.loadAnimation(this, R.anim.slide_in_right)
             AnimationType.CROSS_FADE -> AnimationUtils.loadAnimation(this, R.anim.cross_fade)
         }
-        
+
         animation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
@@ -85,6 +68,26 @@ class CarouselActivity : AppCompatActivity() {
         })
 
         viewPager.getChildAt(0)?.startAnimation(animation)
+    }
+
+    private fun startAutoScroll() {
+        handler = Handler(Looper.getMainLooper())
+        runnable = Runnable {
+            val currentPosition = viewPager.currentItem
+            val nextPosition = (currentPosition + 1) % imageUrls.size
+            viewPager.setCurrentItem(nextPosition, true)
+            handler?.postDelayed(runnable!!, autoScrollInterval)
+        }
+        handler?.postDelayed(runnable!!, autoScrollInterval)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler?.removeCallbacks(runnable!!)
+    }
+
+    enum class AnimationType {
+        FADE, SLIDE, CROSS_FADE
     }
 
     private fun createPageTransformer(): ViewPager2.PageTransformer {
@@ -111,13 +114,5 @@ class CarouselActivity : AppCompatActivity() {
             }
         }
     }
-
-    enum class AnimationType {
-        FADE, SLIDE, CROSS_FADE
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
-    }
 }
+
