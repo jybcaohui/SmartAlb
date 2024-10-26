@@ -14,7 +14,6 @@ class SlideActivity : BaseActivity() {
     private lateinit var imageUrls: List<String>
     private var handler: Handler? = null
     private var runnable: Runnable? = null
-    private var autoScrollInterval: Long = 6000 // 3 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

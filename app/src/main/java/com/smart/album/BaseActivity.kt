@@ -15,6 +15,9 @@ import kotlin.math.abs
 
 
 open class BaseActivity : AppCompatActivity() {
+
+    var autoScrollInterval: Long = 13000 // 3 seconds
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
