@@ -74,38 +74,47 @@ class PanningImageView @JvmOverloads constructor(
         }
 
         if (toXDelta != 0f || toYDelta != 0f) {
-            val animation = TranslateAnimation(
-                fromXDelta, toXDelta,
-                fromYDelta, toYDelta
-            )
-            var duration = 3000
-            var distance = 0.0
-            if(toXDelta != 0f){
-                distance = context.pxToDp(abs(toXDelta)).toDouble()
-                duration =  (ceil(distance / 20.0) * 1000).toInt()//控制横向移动速度，每秒移动30dp
-            }
-            if(toYDelta != 0f){
-                distance = context.pxToDp(abs(toYDelta)).toDouble()
-                duration =  (ceil(distance / 40.0) * 1000).toInt()//控制纵向移动速度，每秒移动60dp
-            }
-
-            animation.duration = duration.toLong() // 动画持续时间
-            animation.fillAfter = true
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    onPanningEndListener?.onPanningEnd()
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-            startAnimation(animation)
+            animationImage(viewWidth,viewHeight,fromXDelta,toXDelta,fromYDelta,toYDelta)
             return true
         } else {
             return false
         }
 
+    }
+
+
+    private fun animationImage(viewWidth:Int,viewHeight:Int,fromXDelta:Float, toXDelta:Float, fromYDelta:Float, toYDelta:Float){
+        val animation = TranslateAnimation(
+            fromXDelta, toXDelta,
+            fromYDelta, toYDelta
+        )
+        var duration = 3000
+        var distance = 0.0
+
+        if(fromXDelta != 0f || toXDelta != 0f){
+            distance = context.pxToDp(abs(toXDelta-fromXDelta)).toDouble()
+            duration =  (ceil(distance / 20.0) * 1000).toInt()//控制横向移动速度，每秒移动30dp
+        }
+
+        if(fromYDelta != 0f || toYDelta != 0f){
+            distance =  context.pxToDp(abs(toYDelta-fromYDelta)).toDouble()
+            duration =  (ceil(distance / 40.0) * 1000).toInt()//控制纵向移动速度，每秒移动60dp
+        }
+
+        animation.duration = duration.toLong() // 动画持续时间
+        animation.fillAfter = true
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+//                onPanningEndListener?.onPanningEnd()
+//                Thread.sleep(100) // 1000 毫秒 = 1 秒
+                animationImage(viewWidth,viewHeight,toXDelta,fromXDelta,toYDelta,fromYDelta)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+        startAnimation(animation)
     }
 
     fun setOnPanningEndListener(listener: OnPanningEndListener) {
