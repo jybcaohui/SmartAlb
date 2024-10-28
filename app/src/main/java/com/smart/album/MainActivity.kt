@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.smart.album.adapters.DriveFileAdapter
+import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +30,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
 
     private lateinit var signInButton: Button
+    private lateinit var signOutButton: Button
     private lateinit var fileRecyclerView: RecyclerView
     private lateinit var statusText: TextView
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         signInButton = findViewById(R.id.signInButton)
+        signOutButton = findViewById(R.id.signOutButton)
         fileRecyclerView = findViewById(R.id.fileRecyclerView)
         statusText = findViewById(R.id.statusText)
 
@@ -57,6 +61,17 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             signIn()
         }
+        signOutButton.setOnClickListener {
+            signOut()
+        }
+
+        // 加载列表
+        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
+        if(!spFileList.isNullOrEmpty()){
+            Log.d("files===",""+spFileList.size)
+            (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(spFileList)
+            updateUI("Found ${spFileList.size} files")
+        }
 
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -64,6 +79,11 @@ class MainActivity : AppCompatActivity() {
             updateUI("Already signed in")
             setupDriveService()
             listFiles()
+            signInButton.visibility = View.GONE
+            signOutButton.visibility = View.VISIBLE
+        } else {
+            signInButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.GONE
         }
     }
 
@@ -86,12 +106,25 @@ class MainActivity : AppCompatActivity() {
         signInLauncher.launch(signInIntent)
     }
 
+    private fun signOut(){
+        googleSignInClient.signOut()
+            .addOnCompleteListener(this) {
+                // 注销完成
+                updateUI("Already signed out")
+                PreferencesHelper.getInstance(this@MainActivity).clearData()
+                signInButton.visibility = View.VISIBLE
+                signOutButton.visibility = View.GONE
+            }
+    }
+
     private fun handleSignInResult(data: Intent?) {
         GoogleSignIn.getSignedInAccountFromIntent(data)
             .addOnSuccessListener { account ->
                 updateUI("Signed in as ${account.email}")
                 setupDriveService()
                 listFiles()
+                signInButton.visibility = View.GONE
+                signOutButton.visibility = View.VISIBLE
             }
             .addOnFailureListener { e ->
                 updateUI("Sign in failed: ${e.message}")
@@ -125,12 +158,15 @@ class MainActivity : AppCompatActivity() {
                     driveService?.files()?.list()
                         ?.setPageSize(30)
                         ?.setQ(query)
-                        ?.setFields("files(id, name, mimeType, modifiedTime)")
+                        ?.setFields("files(id, name, mimeType)")
+//                        ?.setFields("files(id, name, mimeType, modifiedTime)")
                         ?.execute()
                         ?.files ?: emptyList()
                 }
                 (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
                 updateUI("Found ${files.size} files")
+                // 保存列表
+                PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 Log.e("MainActivity", "Error listing files", e)
