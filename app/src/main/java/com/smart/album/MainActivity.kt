@@ -2,7 +2,9 @@ package com.smart.album
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -20,6 +22,7 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.google.api.services.drive.model.FileList
 import com.smart.album.adapters.DriveFileAdapter
 import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var signInButton: Button
     private lateinit var signOutButton: Button
+    private lateinit var chooseButton: Button
     private lateinit var fileRecyclerView: RecyclerView
     private lateinit var statusText: TextView
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -52,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         signInButton = findViewById(R.id.signInButton)
         signOutButton = findViewById(R.id.signOutButton)
+        chooseButton = findViewById(R.id.chooseButton)
         fileRecyclerView = findViewById(R.id.fileRecyclerView)
         statusText = findViewById(R.id.statusText)
 
@@ -63,6 +68,9 @@ class MainActivity : AppCompatActivity() {
         }
         signOutButton.setOnClickListener {
             signOut()
+        }
+        chooseButton.setOnClickListener {
+            listFolders()
         }
 
         // 加载列表
@@ -81,9 +89,11 @@ class MainActivity : AppCompatActivity() {
             listFiles()
             signInButton.visibility = View.GONE
             signOutButton.visibility = View.VISIBLE
+            chooseButton.visibility = View.VISIBLE
         } else {
             signInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.GONE
+            chooseButton.visibility = View.GONE
         }
     }
 
@@ -125,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                 listFiles()
                 signInButton.visibility = View.GONE
                 signOutButton.visibility = View.VISIBLE
+                chooseButton.visibility = View.VISIBLE
             }
             .addOnFailureListener { e ->
                 updateUI("Sign in failed: ${e.message}")
@@ -176,5 +187,53 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUI(message: String) {
         statusText.text = message
+    }
+
+    //文件夹列表
+    private fun listFolders() {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val query = "mimeType='application/vnd.google-apps.folder'"
+                val folders = withContext(Dispatchers.IO) {
+                    driveService?.files()?.list()
+                        ?.setPageSize(30)
+                        ?.setQ(query)
+                        ?.execute()
+                        ?.files ?: emptyList()
+                }
+                Log.d("folders===","size=="+folders.size)
+                folders.forEach { folder ->
+                    Log.d("folders==", "Found folder: ${folder.name} with ID: ${folder.id}")
+                    // 这里可以显示文件夹列表供用户选择
+                }
+            }catch (e:Exception){
+                Log.d("folders===",""+e.message)
+            }
+        }
+
+    }
+
+    //读取指定文件夹下图片列表
+    private fun listImagesInFolder(folderId: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val query = "mimeType='image/jpeg' or mimeType='image/png' and '$folderId' in parents"
+                val files = withContext(Dispatchers.IO) {
+                    driveService?.files()?.list()
+                        ?.setPageSize(30)
+                        ?.setQ(query)
+                        ?.setFields("files(id, name, mimeType)")
+                        ?.execute()
+                        ?.files ?: emptyList()
+                }
+                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
+                updateUI("Found ${files.size} files")
+                // 保存列表
+                PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
+            } catch (e: Exception) {
+                updateUI("Error listing files: ${e.message}")
+                Log.e("MainActivity", "Error listing files", e)
+            }
+        }
     }
 }
