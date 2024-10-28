@@ -38,10 +38,8 @@ class DriveFileAdapter(var context: Context, private var files: List<File>) :
         // 检查是否是图片文件
         if (isImageFile(file.mimeType)) {
             // 构建图片URL
-//            val imageUrl = "https://drive.google.com/uc?id=${file.id}"
-            val imageUrl = "https://drive.google.com/uc?id=${file.id}"
-
-            Log.d("img===","name==${file.name}id==${file.id}==webContentLink==${file.webContentLink}")
+            val imageUrl = "https://drive.google.com/uc?export=download&id=${file.id}"
+            Log.d("img===","imgurl==${imageUrl}")
 
             // 使用Glide加载图片
             Glide.with(holder.imageView.context)
@@ -50,11 +48,6 @@ class DriveFileAdapter(var context: Context, private var files: List<File>) :
                 .error(R.drawable.placeholder_image)
                 .centerCrop()
                 .into(holder.imageView)
-
-            holder.imageView.setOnClickListener{
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(imageUrl))
-                context.startActivity(intent)
-            }
         } else {
             // 如果不是图片，显示默认图标
             holder.imageView.setImageResource(R.drawable.placeholder_image)

@@ -19,8 +19,6 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
-import com.google.api.services.drive.model.File
-import com.google.api.services.drive.model.Permission
 import com.smart.album.adapters.DriveFileAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -122,68 +120,21 @@ class MainActivity : AppCompatActivity() {
     private fun listFiles() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
+                val query = "mimeType='image/jpeg' or mimeType='image/png'"
                 val files = withContext(Dispatchers.IO) {
                     driveService?.files()?.list()
                         ?.setPageSize(30)
+                        ?.setQ(query)
                         ?.setFields("files(id, name, mimeType, modifiedTime)")
                         ?.execute()
                         ?.files ?: emptyList()
                 }
-
-                val filteredFiles = files.filter { file ->
-                    file.mimeType == "image/jpeg" || file.mimeType == "image/png"
-                }
-
-//                if(filteredFiles.isNotEmpty()){
-//                    withContext(Dispatchers.IO) {
-//                        filteredFiles?.forEach { file ->
-//                            try {
-//                                setFilePublic(driveService!!, file.id)
-//                                val fileWithWebContentLink = getFileWithWebContentLink(driveService!!, file.id)
-//                                if (fileWithWebContentLink != null && fileWithWebContentLink.webContentLink != null) {
-//                                    Log.i("drive===", "Found image: ${file.name} (${file.id}) - URL: ${fileWithWebContentLink.webContentLink}")
-//                                    // 你可以在这里处理获取到的链接
-//                                } else {
-//                                    Log.w("drive===", "Failed to get web content link for file: ${file.name} (${file.id})")
-//                                }
-//                            } catch (e: Exception) {
-//                                Log.d("drive==","Exception=="+e.message)
-//                            }
-//                        }
-//                    }
-//                }
-
-
-
-                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(filteredFiles)
+                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
                 updateUI("Found ${files.size} files")
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 Log.e("MainActivity", "Error listing files", e)
             }
-        }
-    }
-
-    private fun setFilePublic(driveService: Drive, fileId: String) {
-        val permission = Permission()
-            .setType("anyone")
-            .setRole("reader") // 可以设置为 "writer" 或 "commenter"
-            .setAllowFileDiscovery(false) // 如果不需要其他人通过搜索找到该文件，可以设置为 false
-
-        driveService.permissions().create(fileId, permission)
-            .setFields("id")
-            .execute()
-    }
-
-    private fun getFileWithWebContentLink(driveService: Drive, fileId: String): File? {
-        return try {
-            val file = driveService.files().get(fileId)
-                .setFields("id, name, webContentLink")
-                .execute()
-            file
-        } catch (e: Exception) {
-            Log.e("Drive", "Error getting file: ${e.message}")
-            null
         }
     }
 
