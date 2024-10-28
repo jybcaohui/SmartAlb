@@ -72,8 +72,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupGoogleSignIn() {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-//            .requestScopes(Scope(DriveScopes.DRIVE_READONLY))
-            .requestScopes(Scope(DriveScopes.DRIVE_METADATA))
+            .requestScopes(Scope(DriveScopes.DRIVE_READONLY))
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
@@ -135,20 +134,24 @@ class MainActivity : AppCompatActivity() {
                     file.mimeType == "image/jpeg" || file.mimeType == "image/png"
                 }
 
-                if(filteredFiles.isNotEmpty()){
-                    withContext(Dispatchers.IO) {
-                        filteredFiles?.forEach { file ->
-                            setFilePublic(driveService!!, file.id)
-                            val fileWithWebContentLink = getFileWithWebContentLink(driveService!!, file.id)
-                            if (fileWithWebContentLink != null && fileWithWebContentLink.webContentLink != null) {
-                                Log.i("Drive", "Found image: ${file.name} (${file.id}) - URL: ${fileWithWebContentLink.webContentLink}")
-                                // 你可以在这里处理获取到的链接
-                            } else {
-                                Log.w("Drive", "Failed to get web content link for file: ${file.name} (${file.id})")
-                            }
-                        }
-                    }
-                }
+//                if(filteredFiles.isNotEmpty()){
+//                    withContext(Dispatchers.IO) {
+//                        filteredFiles?.forEach { file ->
+//                            try {
+//                                setFilePublic(driveService!!, file.id)
+//                                val fileWithWebContentLink = getFileWithWebContentLink(driveService!!, file.id)
+//                                if (fileWithWebContentLink != null && fileWithWebContentLink.webContentLink != null) {
+//                                    Log.i("drive===", "Found image: ${file.name} (${file.id}) - URL: ${fileWithWebContentLink.webContentLink}")
+//                                    // 你可以在这里处理获取到的链接
+//                                } else {
+//                                    Log.w("drive===", "Failed to get web content link for file: ${file.name} (${file.id})")
+//                                }
+//                            } catch (e: Exception) {
+//                                Log.d("drive==","Exception=="+e.message)
+//                            }
+//                        }
+//                    }
+//                }
 
 
 
