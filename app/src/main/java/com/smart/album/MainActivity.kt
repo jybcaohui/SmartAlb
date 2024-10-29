@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         // 加载列表
         val spFileList = PreferencesHelper.getInstance(this).loadFileList()
         if(!spFileList.isNullOrEmpty()){
-            Log.d("files===",""+spFileList.size)
+            Log.d("albs===","files==="+spFileList.size)
             (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(spFileList)
             updateUI("Found ${spFileList.size} files")
         }
@@ -178,9 +178,11 @@ class MainActivity : AppCompatActivity() {
                 updateUI("Found ${files.size} files")
                 // 保存列表
                 PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
+
+                startActivity(Intent(this@MainActivity,FadeActivity::class.java))
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
-                Log.e("MainActivity", "Error listing files", e)
+                Log.e("albs===", "Error listing files", e)
             }
         }
     }
@@ -201,13 +203,14 @@ class MainActivity : AppCompatActivity() {
                         ?.execute()
                         ?.files ?: emptyList()
                 }
-                Log.d("folders===","size=="+folders.size)
+                Log.d("albs===","folders==size=="+folders.size)
                 folders.forEach { folder ->
-                    Log.d("folders==", "Found folder: ${folder.name} with ID: ${folder.id}")
+                    Log.d("albs===","folders==Found folder: ${folder.name} with ID: ${folder.id}")
                     // 这里可以显示文件夹列表供用户选择
+                    listImagesInFolder(folder.id)
                 }
             }catch (e:Exception){
-                Log.d("folders===",""+e.message)
+                Log.d("albs===","folders=="+e.message)
             }
         }
 
@@ -226,10 +229,14 @@ class MainActivity : AppCompatActivity() {
                         ?.execute()
                         ?.files ?: emptyList()
                 }
-                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
-                updateUI("Found ${files.size} files")
-                // 保存列表
-                PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
+                files.forEach{ file ->
+                    Log.d("albs===","${folderId} folders==Found file: ${file.name}")
+                }
+
+//                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
+//                updateUI("Found ${files.size} files")
+//                // 保存列表
+//                PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 Log.e("MainActivity", "Error listing files", e)

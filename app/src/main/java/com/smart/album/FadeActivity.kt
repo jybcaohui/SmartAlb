@@ -7,11 +7,13 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
+import com.smart.album.utils.PreferencesHelper
 
 
 class FadeActivity : BaseActivity() {
     private lateinit var viewPager: ViewPager2
-    private lateinit var imageUrls: List<String>
+//    private lateinit var imageUrls: List<String>
+    private var imageUrls: MutableList<String> = mutableListOf()
     private var handler: Handler? = null
     private var runnable: Runnable? = null
     private var animationType = AnimationType.FADE
@@ -27,12 +29,26 @@ class FadeActivity : BaseActivity() {
         viewPager = findViewById(R.id.viewPager)
 
         // 图片 URL 列表
-        imageUrls = listOf(
-            "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
-            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
-            "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
-            "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
-        )
+//        imageUrls = listOf(
+//            "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
+//            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
+//            "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
+//            "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
+//        )
+
+        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
+        if(!spFileList.isNullOrEmpty()){
+            spFileList.forEach { file->
+                imageUrls.add(imgDrivePath+file.id)
+            }
+        } else {
+            imageUrls = listOf(
+                "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
+                "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
+                "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
+                "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
+            ).toMutableList()
+        }
         // 设置适配器
         viewPager.adapter = ImagePagerAdapter(this, imageUrls)
         viewPager.isUserInputEnabled = false//禁止手动滑动

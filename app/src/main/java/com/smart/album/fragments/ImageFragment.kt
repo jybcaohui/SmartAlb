@@ -1,6 +1,7 @@
 package com.smart.album.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class ImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         imageView = view.findViewById<PanningImageView>(R.id.imageView)
+        Log.d("albs===","imageUrl==="+imageUrl)
         imageUrl?.let {
             Glide.with(this)
                 .load(it)

@@ -16,7 +16,8 @@ import kotlin.math.abs
 
 open class BaseActivity : AppCompatActivity() {
 
-    var autoScrollInterval: Long = 13000 // 3 seconds
+    var autoScrollInterval: Long = 10000 // 13 seconds
+    var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,8 +95,6 @@ open class BaseActivity : AppCompatActivity() {
             val pageWidth = page.width
             val pageHeight = page.height
 
-            Log.d("trans===","position=="+position)
-
             when {
                 position < -1 -> { // [-Infinity,-1)
                     // 这个页面已经完全离开了左边，不需要做任何处理。
@@ -114,7 +113,6 @@ open class BaseActivity : AppCompatActivity() {
                     // 设置透明度
                     page.alpha = MIN_ALPHA + (scaleFactor - MIN_SCALE) / (1 - MIN_SCALE) * (1 - MIN_ALPHA)
 
-                    Log.d("trans===","alpha==="+page.alpha)
                     // 设置缩放
                     page.scaleX = scaleFactor
                     page.scaleY = scaleFactor
@@ -134,7 +132,6 @@ open class BaseActivity : AppCompatActivity() {
             val pageWidth = page.width
             val pageHeight = page.height
 
-            Log.d("transformPage===","position==="+position)
             when {
                 position < -1 -> { // [-Infinity,-1)
                     // 这个页面已经完全离开了左边，不需要做任何处理。
@@ -156,11 +153,8 @@ open class BaseActivity : AppCompatActivity() {
                         addUpdateListener { valueAnimator ->
                             val fraction = valueAnimator.animatedFraction
                             page.alpha = MIN_ALPHA + (scaleFactor - MIN_SCALE) / (1 - MIN_SCALE) * (1 - MIN_ALPHA) * fraction
-                            Log.d("transformPage===","alpha==="+page.alpha)
-                            Log.d("transformPage===","scaleFactor==="+scaleFactor+"==fraction=="+fraction)
                             page.scaleX = scaleFactor * fraction
                             page.scaleY = scaleFactor * fraction
-                            Log.d("transformPage===","scaleX==="+page.scaleX+"==scaleY=="+page.scaleY)
                         }
                         start()
                     }
