@@ -1,16 +1,23 @@
 package com.smart.album
 
+import android.R
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.smart.album.adapters.DriveFileAdapter
+import com.smart.album.utils.PreferencesHelper
 import kotlin.math.abs
 
 
@@ -19,8 +26,35 @@ open class BaseActivity : AppCompatActivity() {
     var autoScrollInterval: Long = 10000 // 13 seconds
     var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check if already signed in
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        if (account == null) {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
+        // 加载列表
+        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
+        Log.d("albs===","files==="+spFileList.size)
+        if(spFileList.isEmpty()){
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
+
+        // 根布局点击事件
+        window.decorView.findViewById<View>(R.id.content)?.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+        //屏幕点击事件
+//        window.decorView.setOnTouchListener { v, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                // 处理点击事件
+//            }
+//            false
+//        }
     }
 
 

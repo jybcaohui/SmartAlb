@@ -2,13 +2,17 @@ package com.smart.album
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -18,20 +22,19 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.smart.album.adapters.DriveFileAdapter
 import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+class DriveFileListActivity : AppCompatActivity() {
 
-    private lateinit var rootLayout: LinearLayout
-    private lateinit var noSignLayout: LinearLayout
-    private lateinit var signedLayout: LinearLayout
-    private lateinit var signInButton: TextView
-    private lateinit var signOutButton: TextView
-    private lateinit var chooseButton: TextView
+    private lateinit var signInButton: Button
+    private lateinit var signOutButton: Button
+    private lateinit var chooseButton: Button
+    private lateinit var fileRecyclerView: RecyclerView
     private lateinit var statusText: TextView
     private lateinit var googleSignInClient: GoogleSignInClient
     private var driveService: Drive? = null
@@ -48,24 +51,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_drive_file_list)
 
-        rootLayout = findViewById(R.id.root)
-        noSignLayout = findViewById(R.id.login_no)
-        signedLayout = findViewById(R.id.login_ed)
-
-
-        signInButton = findViewById(R.id.signInButton)
         signInButton = findViewById(R.id.signInButton)
         signOutButton = findViewById(R.id.signOutButton)
         chooseButton = findViewById(R.id.chooseButton)
+        fileRecyclerView = findViewById(R.id.fileRecyclerView)
         statusText = findViewById(R.id.statusText)
 
         setupGoogleSignIn()
+        setupRecyclerView()
 
-        rootLayout.setOnClickListener {
-            finish()
-        }
         signInButton.setOnClickListener {
             signIn()
         }
@@ -76,6 +72,13 @@ class MainActivity : AppCompatActivity() {
             listFolders()
         }
 
+        // 加载列表
+        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
+        if(!spFileList.isNullOrEmpty()){
+            Log.d("albs===","files==="+spFileList.size)
+            (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(spFileList)
+            updateUI("Found ${spFileList.size} files")
+        }
 
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
@@ -83,11 +86,13 @@ class MainActivity : AppCompatActivity() {
             updateUI("Already signed in")
             setupDriveService()
             listFiles()
-            noSignLayout.visibility = View.GONE
-            signedLayout.visibility = View.VISIBLE
+            signInButton.visibility = View.GONE
+            signOutButton.visibility = View.VISIBLE
+            chooseButton.visibility = View.VISIBLE
         } else {
-            noSignLayout.visibility = View.VISIBLE
-            signedLayout.visibility = View.GONE
+            signInButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.GONE
+            chooseButton.visibility = View.GONE
         }
     }
 
@@ -100,6 +105,10 @@ class MainActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
     }
 
+    private fun setupRecyclerView() {
+        fileRecyclerView.layoutManager = LinearLayoutManager(this)
+        fileRecyclerView.adapter = DriveFileAdapter(this,emptyList())
+    }
 
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
@@ -111,9 +120,9 @@ class MainActivity : AppCompatActivity() {
             .addOnCompleteListener(this) {
                 // 注销完成
                 updateUI("Already signed out")
-                PreferencesHelper.getInstance(this@MainActivity).clearData()
-                noSignLayout.visibility = View.VISIBLE
-                signedLayout.visibility = View.GONE
+                PreferencesHelper.getInstance(this@DriveFileListActivity).clearData()
+                signInButton.visibility = View.VISIBLE
+                signOutButton.visibility = View.GONE
             }
     }
 
@@ -123,8 +132,9 @@ class MainActivity : AppCompatActivity() {
                 updateUI("Signed in as ${account.email}")
                 setupDriveService()
                 listFiles()
-                noSignLayout.visibility = View.GONE
-                signedLayout.visibility = View.VISIBLE
+                signInButton.visibility = View.GONE
+                signOutButton.visibility = View.VISIBLE
+                chooseButton.visibility = View.VISIBLE
             }
             .addOnFailureListener { e ->
                 updateUI("Sign in failed: ${e.message}")
@@ -163,9 +173,12 @@ class MainActivity : AppCompatActivity() {
                         ?.execute()
                         ?.files ?: emptyList()
                 }
+                (fileRecyclerView.adapter as DriveFileAdapter).updateFiles(files)
                 updateUI("Found ${files.size} files")
                 // 保存列表
-                PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
+                PreferencesHelper.getInstance(this@DriveFileListActivity).saveFileList(files)
+
+//                startActivity(Intent(this@MainActivity,FadeActivity::class.java))
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 Log.e("albs===", "Error listing files", e)
@@ -193,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 folders.forEach { folder ->
                     Log.d("albs===","folders==Found folder: ${folder.name} with ID: ${folder.id}")
                     // 这里可以显示文件夹列表供用户选择
-//                    listImagesInFolder(folder.id)
+                    listImagesInFolder(folder.id)
                 }
             }catch (e:Exception){
                 Log.d("albs===","folders=="+e.message)

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">SmartAlbum</string>
     <string name="setting">Setting</string>
+    <string name="no_login_remind">Login To Google Drive</string>
 </resources>

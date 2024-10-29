@@ -18,7 +18,7 @@
 <!--        <activity android:name=".MainActivity"-->
 <!--        <activity android:name=".FadeActivity"-->
 <!--        <activity android:name=".CrossFadeActivity"-->
-        <activity android:name=".MainActivity"
+        <activity android:name=".FadeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FadeActivity" />
+        <activity android:name=".MainActivity"
+            android:theme="@style/TransparentTheme"/>
     </application>
 
 </manifest>
