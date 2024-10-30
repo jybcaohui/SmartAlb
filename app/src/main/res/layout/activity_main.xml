@@ -22,16 +22,28 @@
             android:textSize="22sp"
             android:textStyle="bold"
             android:text="@string/no_login_remind"/>
-        <TextView
+        <LinearLayout
             android:id="@+id/signInButton"
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="14sp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/btn_blue"
-            android:text="Login" />
+            android:background="@drawable/btn_blue">
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="1dp"
+                android:src="@mipmap/log_in"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="Login" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -40,38 +52,71 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
-        <TextView
+        <LinearLayout
             android:id="@+id/signOutButton"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="14sp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/btn_red"
-            android:text="Sign out" />
+            android:background="@drawable/btn_red">
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="8dp"
+                android:src="@mipmap/log_out"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="Sign out" />
+        </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:id="@+id/chooseButton"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_green"
-            android:text="Select Photo" />
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_green">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginEnd="4dp"
+                android:src="@mipmap/folder"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="Select Photo" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/setting"
+
+        <LinearLayout
+            android:id="@+id/settingButton"
             android:layout_width="200dp"
             android:layout_height="40dp"
-            android:textColor="@color/white"
             android:gravity="center"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_blue"
-            android:text="Setting" />
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_blue">
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginEnd="6dp"
+                android:src="@mipmap/setting"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:text="Setting" />
+        </LinearLayout>
+
     </LinearLayout>
 
 

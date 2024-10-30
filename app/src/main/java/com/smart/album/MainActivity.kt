@@ -29,9 +29,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rootLayout: LinearLayout
     private lateinit var noSignLayout: LinearLayout
     private lateinit var signedLayout: LinearLayout
-    private lateinit var signInButton: TextView
-    private lateinit var signOutButton: TextView
-    private lateinit var chooseButton: TextView
+    private lateinit var signInButton: LinearLayout
+    private lateinit var signOutButton: LinearLayout
+    private lateinit var chooseButton: LinearLayout
+    private lateinit var settingButton: LinearLayout
     private lateinit var statusText: TextView
     private lateinit var googleSignInClient: GoogleSignInClient
     private var driveService: Drive? = null
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         signInButton = findViewById(R.id.signInButton)
         signOutButton = findViewById(R.id.signOutButton)
         chooseButton = findViewById(R.id.chooseButton)
+        settingButton = findViewById(R.id.settingButton)
         statusText = findViewById(R.id.statusText)
 
         setupGoogleSignIn()
@@ -74,6 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
         chooseButton.setOnClickListener {
             listFolders()
+        }
+        settingButton.setOnClickListener {
+            startActivity(Intent(this, SettingActivity::class.java))
         }
 
 
