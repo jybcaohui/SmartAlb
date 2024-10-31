@@ -2,4 +2,17 @@
     <string name="app_name">SmartAlbum</string>
     <string name="setting">Setting</string>
     <string name="no_login_remind">Login To Google Drive</string>
+    <string name="setting_slide_show">SLIDE SHOW</string>
+    <string name="setting_display_time">Display Time</string>
+    <string name="setting_display_effect">Display Effect</string>
+    <string name="setting_transition_effect">Transition Effect</string>
+    <string name="setting_photo_order">Photo Order</string>
+    <string name="setting_music">Background Music</string>
+    <string name="setting_auto">AUTO-START</string>
+    <string name="setting_auto_schedules">Schedules</string>
+    <string name="setting_auto_timer">Timer</string>
+    <string name="setting_others">OTHERS</string>
+    <string name="setting_syn">Sync Interval</string>
+    <string name="setting_syn_remind">To scan your photo library for update</string>
+    <string name="setting_screen">Screen Rotation</string>
 </resources>
