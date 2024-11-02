@@ -1,6 +1,9 @@
 package com.smart.album.adapters
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +17,12 @@ import android.widget.TextView
 import android.widget.Toast
 import com.smart.album.R
 
-class SelectAdapter(private val context: Context, private var items: List<String>, private var selectedItemPosition: Int = -1) : BaseAdapter() {
+class SelectAdapter(private val context: Context, private var items: List<String>,private var selectedItemPosition:Int = 0, private var displaySeconds: Int = 0) : BaseAdapter() {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    private var customNum:String = ""
-    private var customUnit:String = ""
+    private var customNum:Int = 1
+    private var customUnit:String = "Seconds"
     override fun getCount(): Int {
         return items.size
     }
@@ -51,12 +54,55 @@ class SelectAdapter(private val context: Context, private var items: List<String
 
         viewHolder.radioButton.setOnClickListener {
             selectedItemPosition = position
+            var seconds = 0
+            if(position == items.size-1){
+                customNum = try {
+                    viewHolder.edCustom.text.toString().toInt()
+                } catch (e: Exception) {
+                    1
+                }
+                seconds = when(customUnit){
+                    "Seconds" -> customNum * 1
+                    "Minutes" -> customNum * 60
+                    "Hours" -> customNum * 3600
+                    else -> 1
+                }
+            }
+            Log.d("TAG===", "position: $position")
+            Log.d("TAG===", "seconds: $seconds")
+            onItemSelectedListener?.onItemSelected(item, position, seconds)
             notifyDataSetChanged()
-            onItemSelectedListener?.onItemSelected(item, position)
         }
 
         if(position == items.size-1){
             viewHolder.edCustom.visibility = View.VISIBLE
+            viewHolder.edCustom.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                    var seconds = 0
+                    if(position == items.size-1){
+                        customNum = try {
+                            viewHolder.edCustom.text.toString().toInt()
+                        } catch (e: Exception) {
+                            1
+                        }
+                        seconds = when(customUnit){
+                            "Seconds" -> customNum * 1
+                            "Minutes" -> customNum * 60
+                            "Hours" -> customNum * 3600
+                            else -> 10
+                        }
+                    }
+                    Log.d("TAG===", "222position: $position")
+                    Log.d("TAG===", "222seconds: $seconds")
+                    onItemSelectedListener?.onItemSelected(item, position, seconds)
+                }
+            })
             viewHolder.spinner.visibility = View.VISIBLE
             // 创建 ArrayAdapter，使用字符串数组作为数据源
             val adapter = ArrayAdapter.createFromResource(
@@ -73,14 +119,30 @@ class SelectAdapter(private val context: Context, private var items: List<String
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     val selectedOption = parent.getItemAtPosition(position).toString()
                     customUnit = selectedOption
-                    Toast.makeText(context, "Selected: $selectedOption", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     // Do nothing
                 }
             }
-
+            if(selectedItemPosition == 6 && displaySeconds > 0){
+                when {
+                    displaySeconds % 3600 == 0 -> {
+                        val hours = displaySeconds / 3600
+                        viewHolder.edCustom.setText(hours.toString())
+                        viewHolder.spinner.setSelection(2)
+                    }
+                    displaySeconds % 60 == 0 -> {
+                        val minutes = displaySeconds / 60
+                        viewHolder.edCustom.setText(minutes.toString())
+                        viewHolder.spinner.setSelection(1)
+                    }
+                    else -> {
+                        viewHolder.edCustom.setText(displaySeconds.toString())
+                        viewHolder.spinner.setSelection(0)
+                    }
+                }
+            }
         } else {
             viewHolder.spinner.visibility = View.GONE
             viewHolder.edCustom.visibility = View.GONE
@@ -100,6 +162,6 @@ class SelectAdapter(private val context: Context, private var items: List<String
     var onItemSelectedListener: OnItemSelectedListener? = null
 
     interface OnItemSelectedListener {
-        fun onItemSelected(item: String, position: Int)
+        fun onItemSelected(item: String, position: Int, seconds:Int)
     }
 }

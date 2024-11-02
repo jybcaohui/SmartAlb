@@ -12,6 +12,7 @@ class PreferencesHelper private constructor(context: Context) {
     companion object {
         private const val PREFS_NAME = "SmartAlbs"
         private const val LIST_KEY = "img_list"
+        const val DISPLAY_TIME_SECONDS = "display_time_seconds"
 
         @Volatile
         private var INSTANCE: PreferencesHelper? = null
@@ -50,5 +51,27 @@ class PreferencesHelper private constructor(context: Context) {
         val gson = Gson()
         val type: Type = object : TypeToken<ArrayList<File>>() {}.type
         return gson.fromJson(json, type) ?: arrayListOf()
+    }
+
+    fun saveStr(key: String, str: String) {
+        with(sharedPreferences.edit()) {
+            putString(key, str)
+            apply() // 或者使用commit()方法
+        }
+    }
+
+    fun getStr(key:String): String? {
+        return sharedPreferences.getString(key,"")
+    }
+
+    fun saveInt(key: String, value: Int) {
+        with(sharedPreferences.edit()) {
+            putInt(key, value)
+            apply() // 或者使用commit()方法
+        }
+    }
+
+    fun getInt(key:String, defValue: Int = 0): Int {
+        return sharedPreferences.getInt(key,defValue)
     }
 }

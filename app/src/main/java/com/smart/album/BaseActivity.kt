@@ -23,13 +23,15 @@ import kotlin.math.abs
 
 open class BaseActivity : AppCompatActivity() {
 
-    var autoScrollInterval: Long = 10000 // 13 seconds
+    var autoScrollInterval: Long = 10000 // 10 seconds
     var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        autoScrollInterval =  (PreferencesHelper.getInstance(this@BaseActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
+        Log.d("TAG===","autoScrollInterval=="+autoScrollInterval)
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account == null) {
