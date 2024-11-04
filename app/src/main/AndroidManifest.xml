@@ -30,6 +30,15 @@
             android:theme="@style/TransparentTheme"/>
         <activity android:name=".SettingActivity"
             android:theme="@style/Theme.Setting"/>
+        <activity android:name=".ScheduleSettingActivity"
+            android:theme="@style/Theme.Setting"/>
+
+        <receiver android:name=".receiver.TimerReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.ACTION_ALARM" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

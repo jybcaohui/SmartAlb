@@ -13,6 +13,9 @@ class PreferencesHelper private constructor(context: Context) {
         private const val PREFS_NAME = "SmartAlbs"
         private const val LIST_KEY = "img_list"
         const val DISPLAY_TIME_SECONDS = "display_time_seconds"
+        const val PHOTO_ORDER = "photo_order"
+        const val TIMER_MINUTES = "timer_minutes"
+        const val BG_MUSIC_ON = "bg_music_on"
 
         @Volatile
         private var INSTANCE: PreferencesHelper? = null
@@ -73,5 +76,16 @@ class PreferencesHelper private constructor(context: Context) {
 
     fun getInt(key:String, defValue: Int = 0): Int {
         return sharedPreferences.getInt(key,defValue)
+    }
+
+    fun saveBoolean(key: String, value: Boolean) {
+        with(sharedPreferences.edit()) {
+            putBoolean(key, value)
+            apply() // 或者使用commit()方法
+        }
+    }
+
+    fun getBoolean(key:String, defValue: Boolean = false): Boolean {
+        return sharedPreferences.getBoolean(key,defValue)
     }
 }

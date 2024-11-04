@@ -86,8 +86,6 @@ class MainActivity : AppCompatActivity() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account != null) {
             updateUI("Already signed in")
-            setupDriveService()
-            listFiles()
             noSignLayout.visibility = View.GONE
             signedLayout.visibility = View.VISIBLE
         } else {
@@ -127,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener { account ->
                 updateUI("Signed in as ${account.email}")
                 setupDriveService()
-                listFiles()
+                listFiles(true)
                 noSignLayout.visibility = View.GONE
                 signedLayout.visibility = View.VISIBLE
             }
@@ -139,12 +137,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupDriveService() {
         val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account != null) {
+        if(account != null){
             val credential = GoogleAccountCredential.usingOAuth2(
                 this, listOf(DriveScopes.DRIVE_READONLY)
             )
             credential.selectedAccount = account.account
-
             driveService = Drive.Builder(
                 NetHttpTransport(),  // 使用 NetHttpTransport 替代 AndroidHttp
                 GsonFactory(),
@@ -155,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun listFiles() {
+    fun listFiles(fromLogin:Boolean) {
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 val query = "mimeType='image/jpeg' or mimeType='image/png'"
@@ -171,6 +168,10 @@ class MainActivity : AppCompatActivity() {
                 updateUI("Found ${files.size} files")
                 // 保存列表
                 PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
+                if(fromLogin){
+                    startActivity(Intent(this@MainActivity, FadeActivity::class.java))
+                    finish()
+                }
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 Log.e("albs===", "Error listing files", e)

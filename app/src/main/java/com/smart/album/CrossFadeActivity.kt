@@ -3,13 +3,11 @@ package com.smart.album
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
 
 
-class CrossFadeActivity : BaseActivity() {
+class CrossFadeActivity : BasePlayActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var imageUrls: List<String>
     private var handler: Handler? = null

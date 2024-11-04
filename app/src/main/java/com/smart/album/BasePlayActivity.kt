@@ -1,14 +1,13 @@
 package com.smart.album
 
-import android.R
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
@@ -16,49 +15,72 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.smart.album.adapters.DriveFileAdapter
 import com.smart.album.utils.PreferencesHelper
 import kotlin.math.abs
 
 
-open class BaseActivity : AppCompatActivity() {
+open class BasePlayActivity : AppCompatActivity() {
 
     var autoScrollInterval: Long = 10000 // 10 seconds
     var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
+    private var mediaPlayer: MediaPlayer? = null
+    private var musicOn = false
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        autoScrollInterval =  (PreferencesHelper.getInstance(this@BaseActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
-        Log.d("TAG===","autoScrollInterval=="+autoScrollInterval)
+        autoScrollInterval =  (PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account == null) {
             startActivity(Intent(this, MainActivity::class.java))
+        } else {
+            // 加载列表
+            val spFileList = PreferencesHelper.getInstance(this).loadFileList()
+            if(spFileList.isEmpty()){
+                startActivity(Intent(this, MainActivity::class.java))
+            }
         }
-
-        // 加载列表
-        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
-        Log.d("albs===","files==="+spFileList.size)
-        if(spFileList.isEmpty()){
-            startActivity(Intent(this, MainActivity::class.java))
-        }
-
 
         // 根布局点击事件
-        window.decorView.findViewById<View>(R.id.content)?.setOnClickListener {
+        window.decorView.findViewById<View>(android.R.id.content)?.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
-        //屏幕点击事件
-//        window.decorView.setOnTouchListener { v, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//                // 处理点击事件
-//            }
-//            false
-//        }
     }
 
+    private fun initMusic(){
+        // 初始化 MediaPlayer
+        mediaPlayer = MediaPlayer.create(this, R.raw.bensound_happiness)
+        mediaPlayer?.isLooping = true // 设置循环播放
+        mediaPlayer?.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
+        if(musicOn){
+            if(mediaPlayer == null){
+                initMusic()
+            } else {
+                if (!mediaPlayer?.isPlaying!!) {
+                    mediaPlayer?.start()
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 暂停播放
+        mediaPlayer?.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+    }
 
     enum class AnimationType {
         FADE, SLIDE, CROSS_FADE

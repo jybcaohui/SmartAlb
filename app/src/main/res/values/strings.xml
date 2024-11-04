@@ -16,6 +16,7 @@
     <string name="setting_syn_remind">To scan your photo library for update</string>
     <string name="setting_screen">Screen Rotation</string>
     <string name="setting_done">Done</string>
+    <string name="schedule_setting">Schedule Setting</string>
 
     <string-array name="custom_unit">
         <item>Seconds</item>
@@ -23,14 +24,9 @@
         <item>Hours</item>
     </string-array>
 
-    <string-array name="custom_value">
-        <item>10 Seconds</item>
-        <item>15 Seconds</item>
-        <item>30 Seconds</item>
-        <item>1 Minutes</item>
-        <item>5 Minutes</item>
-        <item>10 Minutes</item>
-        <item>Custom:</item>
+    <string-array name="timer_unit">
+        <item>Minutes</item>
+        <item>Hours</item>
     </string-array>
 
 </resources>

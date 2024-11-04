@@ -14,10 +14,9 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import com.smart.album.R
 
-class SelectAdapter(private val context: Context, private var items: List<String>,private var selectedItemPosition:Int = 0, private var displaySeconds: Int = 0) : BaseAdapter() {
+class DisplayTimeAdapter(private val context: Context, private var items: List<String>, private var selectedItemPosition:Int = 0, private var displaySeconds: Int = 0) : BaseAdapter() {
 
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
