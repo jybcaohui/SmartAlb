@@ -177,6 +177,8 @@ class SettingActivity : BaseActivity() {
         tvDone.setOnClickListener{
             PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.DISPLAY_TIME_SECONDS,displaySeconds)
             popupWindow.dismiss()
+
+            EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
         }
         popupWindow.animationStyle = R.style.PopupAnimation
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)
@@ -269,6 +271,7 @@ class SettingActivity : BaseActivity() {
         tvDone.setOnClickListener{
             PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.PHOTO_ORDER,photoOrder)
             popupWindow.dismiss()
+            EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
         }
         popupWindow.animationStyle = R.style.PopupAnimation
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)

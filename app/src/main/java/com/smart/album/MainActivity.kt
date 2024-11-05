@@ -84,8 +84,8 @@ class MainActivity : BaseActivity() {
             signOut()
         }
         chooseButton.setOnClickListener {
-//            listFolders()
-            startActivity(Intent(this, DriveFileListActivity::class.java))
+            listFolders()
+//            startActivity(Intent(this, DriveFileListActivity::class.java))
         }
         settingButton.setOnClickListener {
             startActivity(Intent(this, SettingActivity::class.java))
