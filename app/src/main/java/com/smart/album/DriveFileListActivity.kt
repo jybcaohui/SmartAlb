@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -30,14 +31,13 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.smart.album.adapters.DriveFileAdapter
+import com.smart.album.utils.BlurBuilder
 import com.smart.album.utils.PreferencesHelper
-import com.smart.album.views.ZoomableImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
-import kotlin.math.min
 
 class DriveFileListActivity : AppCompatActivity() {
 
@@ -65,55 +65,54 @@ class DriveFileListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_drive_file_list)
 
         imgZoom = findViewById(R.id.img_zoom)
-
-        var imageUrl = "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg"
+//        var imageUrl = "https://drive.google.com/uc?export=download&id=1zINiutFBgTADEz96y-QtXbfuBZscnHK6"
+//        var imageUrl = "https://drive.google.com/uc?export=download&id=1kb2jYPAkFJxRpp1SAJKvqJr6AHg5Hrq7"
+        var imageUrl = "https://drive.google.com/uc?export=download&id=1K0Yy2FQUTmpz5wZk0spMrUhp2iDDXM8V"
+//        var imageUrl = "https://drive.google.com/uc?export=download&id=18tqsvWppMjtkrsbghgG-bcs7wl67uG70"
+//        var imageUrl = "https://drive.google.com/uc?export=download&id=1NwKC3eYopt1ZJC9GwiPcOdLwZ283m9ny"
+//        var imageUrl = "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg"
+//        var imageUrl = "https://pic.616pic.com/bg_w1180/00/18/34/ce3Q8cLocY.jpg"
+//        var imageUrl = "https://file.moyublog.com/d/file/2020-11-16/0b8464559a98698ba4198cfeeccc6602.jpg"
         Glide.with(this)
             .asBitmap()
             .load(imageUrl)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    // 虚化背景
+                    val blurredBackground = BlurBuilder.blur(this@DriveFileListActivity, resource)
+                    // 将虚化的 Bitmap 设置为 ImageView 的背景
+                    imgZoom.background = BitmapDrawable(resources, blurredBackground)
                     // 设置图片到 ImageView
                     imgZoom.setImageBitmap(resource)
-//                    imgZoom.setScreenSize(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
-//                    imgZoom.setIntrinsicSize(resource.width, resource.height)
-//                    // 开始动画
-//                    imgZoom.startZoomAnimation()
-
+                    val viewWidth = resources.displayMetrics.widthPixels
+                    val viewHeight = resources.displayMetrics.heightPixels
                     // 计算图片初始尺寸
                     val imageWidth = resource.width
                     val imageHeight = resource.height
-                    val minDimension = min(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
-                    val maxDimension = max(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
 
+                    Log.d("scale===","viewWidth=$viewWidth,imageWidth=$imageWidth")
+                    Log.d("scale===","viewHeight=$viewHeight,imageHeight=$imageHeight")
                     // 计算初始缩放比例
-                    val initialScale = if (imageWidth > imageHeight) {
-                        minDimension.toFloat() / imageHeight
+                    var initialScale = 1.0f
+                    var finalScale = if(viewWidth > imageWidth && viewHeight > imageHeight){
+                        max(viewWidth.toFloat() / imageWidth, viewHeight.toFloat() / imageHeight)
                     } else {
-                        minDimension.toFloat() / imageWidth
+                        max( imageWidth / viewWidth.toFloat(), imageHeight / viewHeight.toFloat())
+                    }
+                    if(finalScale < 3.0f){
+                        finalScale = 3.0f
                     }
                     imgZoom.scaleX = initialScale
                     imgZoom.scaleY = initialScale
+                    val scaleXAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleX", finalScale,initialScale)
+                    val scaleYAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleY", finalScale,initialScale)
 
-                    // 创建动画
                     val animatorSet = AnimatorSet()
-
-                    val finalScale = if (imageWidth > imageHeight) {
-                        maxDimension.toFloat() / imageWidth
-                    } else {
-                        maxDimension.toFloat() / imageHeight
-                    }
-
-                    Log.d("scale","scaleX==$initialScale $finalScale")
-                    val scaleXAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleX", finalScale, initialScale)
-                    val scaleYAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleY", finalScale, initialScale)
-
                     // 将动画添加到AnimatorSet中
                     animatorSet.playTogether(scaleXAnimator, scaleYAnimator)
                     animatorSet.duration = 2000  // 动画持续时间2秒
-
                     // 开始动画
                     animatorSet.start()
-
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {

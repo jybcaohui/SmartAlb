@@ -24,7 +24,7 @@
         android:visibility="gone"
         android:scaleType="centerCrop" />
 
-    <com.smart.album.views.ZoomableImageView
+    <ImageView
         android:id="@+id/zoom_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
