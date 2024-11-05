@@ -4,8 +4,29 @@
     android:layout_height="match_parent">
 
     <com.smart.album.views.PanningImageView
-        android:id="@+id/imageView"
+        android:id="@+id/pan_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/scale_center_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/crop_center_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:scaleType="centerCrop" />
+
+    <com.smart.album.views.ZoomableImageView
+        android:id="@+id/zoom_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 </FrameLayout>

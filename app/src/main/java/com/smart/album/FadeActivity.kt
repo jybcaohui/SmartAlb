@@ -8,7 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
-import com.smart.album.utils.MessageEvent
+import com.smart.album.utils.RefreshPageDataEvent
 import com.smart.album.utils.PreferencesHelper
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -68,8 +68,9 @@ class FadeActivity : BasePlayActivity() {
         startAutoScroll()
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN) // 确保在主线程中处理
-    fun onMessageEvent(event: MessageEvent) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: RefreshPageDataEvent) {
+        Log.d("event==",""+event.message)
         handler?.removeCallbacks(runnable!!)
         initPageData()
     }

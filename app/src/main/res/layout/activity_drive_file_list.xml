@@ -3,9 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="60dp"
-    android:background="@color/white_trans"
-    android:paddingHorizontal="16dp">
+    android:gravity="center"
+    android:background="@color/white_trans">
+
+    <ImageView
+        android:id="@+id/img_zoom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <Button
         android:id="@+id/signInButton"

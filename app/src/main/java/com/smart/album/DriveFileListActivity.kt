@@ -1,18 +1,25 @@
 package com.smart.album
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.provider.DocumentsContract
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -24,13 +31,17 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.smart.album.adapters.DriveFileAdapter
 import com.smart.album.utils.PreferencesHelper
+import com.smart.album.views.ZoomableImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.max
+import kotlin.math.min
 
 class DriveFileListActivity : AppCompatActivity() {
 
+    private lateinit var imgZoom: ImageView
     private lateinit var signInButton: Button
     private lateinit var signOutButton: Button
     private lateinit var chooseButton: Button
@@ -52,6 +63,64 @@ class DriveFileListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drive_file_list)
+
+        imgZoom = findViewById(R.id.img_zoom)
+
+        var imageUrl = "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg"
+        Glide.with(this)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    // 设置图片到 ImageView
+                    imgZoom.setImageBitmap(resource)
+//                    imgZoom.setScreenSize(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
+//                    imgZoom.setIntrinsicSize(resource.width, resource.height)
+//                    // 开始动画
+//                    imgZoom.startZoomAnimation()
+
+                    // 计算图片初始尺寸
+                    val imageWidth = resource.width
+                    val imageHeight = resource.height
+                    val minDimension = min(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
+                    val maxDimension = max(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels)
+
+                    // 计算初始缩放比例
+                    val initialScale = if (imageWidth > imageHeight) {
+                        minDimension.toFloat() / imageHeight
+                    } else {
+                        minDimension.toFloat() / imageWidth
+                    }
+                    imgZoom.scaleX = initialScale
+                    imgZoom.scaleY = initialScale
+
+                    // 创建动画
+                    val animatorSet = AnimatorSet()
+
+                    val finalScale = if (imageWidth > imageHeight) {
+                        maxDimension.toFloat() / imageWidth
+                    } else {
+                        maxDimension.toFloat() / imageHeight
+                    }
+
+                    Log.d("scale","scaleX==$initialScale $finalScale")
+                    val scaleXAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleX", finalScale, initialScale)
+                    val scaleYAnimator = ObjectAnimator.ofFloat(imgZoom, "scaleY", finalScale, initialScale)
+
+                    // 将动画添加到AnimatorSet中
+                    animatorSet.playTogether(scaleXAnimator, scaleYAnimator)
+                    animatorSet.duration = 2000  // 动画持续时间2秒
+
+                    // 开始动画
+                    animatorSet.start()
+
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // 图片加载失败时的处理
+                }
+            })
+
 
         signInButton = findViewById(R.id.signInButton)
         signOutButton = findViewById(R.id.signOutButton)

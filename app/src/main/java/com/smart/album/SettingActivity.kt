@@ -25,12 +25,15 @@ import com.smart.album.adapters.DisplayTimeAdapter
 import com.smart.album.adapters.PhotoOrderAdapter
 import com.smart.album.adapters.TimerAdapter
 import com.smart.album.adapters.TransitionEffectAdapter
+import com.smart.album.utils.ImageDisplayEvent
 import com.smart.album.utils.PreferencesHelper
+import com.smart.album.utils.RefreshPageDataEvent
 import com.smart.album.views.LoadingDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 
 class SettingActivity : BaseActivity() {
 
@@ -204,6 +207,8 @@ class SettingActivity : BaseActivity() {
         tvDone.setOnClickListener{
             PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.DISPLAY_EFFECT,displayEffect)
             popupWindow.dismiss()
+
+            EventBus.getDefault().post(ImageDisplayEvent("ImageDisplay"))
         }
         popupWindow.animationStyle = R.style.PopupAnimation
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)
@@ -355,7 +360,8 @@ class SettingActivity : BaseActivity() {
                 // 保存列表
                 PreferencesHelper.getInstance(this@SettingActivity).saveFileList(files)
                 hideLoading()
-                Toast.makeText(this@SettingActivity, "File list scan successfully. Find ${files.size} Images", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SettingActivity, "Sync successfully. Find ${files.size} Images", Toast.LENGTH_SHORT).show()
+                EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
             } catch (e: Exception) {
             }
         }

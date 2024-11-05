@@ -24,7 +24,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.smart.album.adapters.FolderAdapter
-import com.smart.album.utils.MessageEvent
+import com.smart.album.utils.RefreshPageDataEvent
 import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -199,8 +199,7 @@ class MainActivity : BaseActivity() {
                 // 保存列表
                 PreferencesHelper.getInstance(this@MainActivity).saveFileList(files)
                 hideLoading()
-                val event = MessageEvent("RefreshData")
-                EventBus.getDefault().post(event)
+                EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
             } catch (e: Exception) {
                 updateUI("Error listing files: ${e.message}")
                 hideLoading()
