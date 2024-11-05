@@ -12,7 +12,6 @@ import android.widget.ListView
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -25,10 +24,10 @@ import com.smart.album.adapters.DisplayTimeAdapter
 import com.smart.album.adapters.PhotoOrderAdapter
 import com.smart.album.adapters.TimerAdapter
 import com.smart.album.adapters.TransitionEffectAdapter
-import com.smart.album.utils.ImageDisplayEvent
+import com.smart.album.events.CloseCurrentEvent
+import com.smart.album.events.ImageDisplayEvent
 import com.smart.album.utils.PreferencesHelper
-import com.smart.album.utils.RefreshPageDataEvent
-import com.smart.album.views.LoadingDialog
+import com.smart.album.events.RefreshPageDataEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -238,6 +237,8 @@ class SettingActivity : BaseActivity() {
         tvDone.setOnClickListener{
             PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.TRANSITION_EFFECT,transitionEffect)
             popupWindow.dismiss()
+            EventBus.getDefault().post(CloseCurrentEvent("close playing activity"))
+            startActivity(Intent(this@SettingActivity,WelcomeActivity::class.java))
         }
         popupWindow.animationStyle = R.style.PopupAnimation
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)

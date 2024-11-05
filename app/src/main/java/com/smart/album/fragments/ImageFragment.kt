@@ -17,7 +17,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.smart.album.R
 import com.smart.album.utils.BlurBuilder
-import com.smart.album.utils.ImageDisplayEvent
+import com.smart.album.events.ImageDisplayEvent
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.PanningImageView
 import org.greenrobot.eventbus.EventBus

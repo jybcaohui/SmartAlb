@@ -8,8 +8,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
-import com.smart.album.utils.RefreshPageDataEvent
+import com.smart.album.events.CloseCurrentEvent
+import com.smart.album.events.RefreshPageDataEvent
 import com.smart.album.utils.PreferencesHelper
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -28,7 +30,7 @@ class FadeActivity : BasePlayActivity() {
         setNoTitle()
         setContentView(R.layout.activity_fade)
         setStatusBar()
-
+        EventBus.getDefault().register(this)
         handler = Handler(Looper.getMainLooper())
         viewPager = findViewById(R.id.viewPager)
         adapter = ImagePagerAdapter(this, imageUrls)
@@ -75,6 +77,13 @@ class FadeActivity : BasePlayActivity() {
         initPageData()
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: CloseCurrentEvent) {
+        Log.d("event==",""+event.message)
+        handler?.removeCallbacks(runnable!!)
+        finish()
+    }
+
     private fun applyAnimation() {
         val animation = when (animationType) {
             AnimationType.FADE -> AnimationUtils.loadAnimation(this, R.anim.custom_fade_in)
@@ -94,28 +103,22 @@ class FadeActivity : BasePlayActivity() {
     }
 
     private fun startAutoScroll() {
-        runnable = Runnable {
-            val currentPosition = viewPager.currentItem
-            val nextPosition = (currentPosition + 1) % imageUrls.size
-            viewPager.setCurrentItem(nextPosition, true)
+        if(imageUrls.size > 1){
+            runnable = Runnable {
+                val currentPosition = viewPager.currentItem
+                val nextPosition = (currentPosition + 1) % imageUrls.size
+                viewPager.setCurrentItem(nextPosition, true)
+                handler?.postDelayed(runnable!!, displaySeconds)
+            }
             handler?.postDelayed(runnable!!, displaySeconds)
         }
-        handler?.postDelayed(runnable!!, displaySeconds)
     }
 
-    private fun scrollNext(){
-        // 延时3秒后执行任务
-        handler?.postDelayed({
-            val currentPosition = viewPager.currentItem
-            val nextPosition = (currentPosition + 1) % imageUrls.size
-            viewPager.setCurrentItem(nextPosition, true)
-        }, 6000) // 3000 毫秒 = 3 秒
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         handler?.removeCallbacks(runnable!!)
+        EventBus.getDefault().unregister(this)
     }
 
     private fun createPageTransformer(): ViewPager2.PageTransformer {

@@ -24,7 +24,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.smart.album.adapters.FolderAdapter
-import com.smart.album.utils.RefreshPageDataEvent
+import com.smart.album.events.RefreshPageDataEvent
 import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

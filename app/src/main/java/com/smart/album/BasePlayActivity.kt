@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
-import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
 
 
@@ -41,7 +40,6 @@ open class BasePlayActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EventBus.getDefault().register(this)
         loadingDialog = LoadingDialog()
         displaySeconds =  (PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
         displayEffect =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
@@ -98,7 +96,7 @@ open class BasePlayActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().unregister(this)
+
         mediaPlayer?.stop()
         mediaPlayer?.release()
     }
