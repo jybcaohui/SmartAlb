@@ -5,12 +5,17 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.smart.album.fragments.ImageFragment
 
-class ImagePagerAdapter(fragmentActivity: FragmentActivity, private val imageUrls: List<String>) :
+class ImagePagerAdapter(fragmentActivity: FragmentActivity, private var imageUrls: List<String>) :
     FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int = imageUrls.size
 
     override fun createFragment(position: Int): Fragment {
         return ImageFragment.newInstance(imageUrls[position])
+    }
+
+    fun setNewData(newImageUrls: List<String>) {
+        imageUrls = newImageUrls
+        notifyDataSetChanged()
     }
 }

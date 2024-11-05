@@ -17,6 +17,7 @@
     <string name="setting_screen">Screen Rotation</string>
     <string name="setting_done">Done</string>
     <string name="schedule_setting">Schedule Setting</string>
+    <string name="folder_title">Folders on your google drive</string>
 
     <string-array name="custom_unit">
         <item>Seconds</item>

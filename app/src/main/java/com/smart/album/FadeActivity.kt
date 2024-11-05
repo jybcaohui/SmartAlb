@@ -8,7 +8,10 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
+import com.smart.album.utils.MessageEvent
 import com.smart.album.utils.PreferencesHelper
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class FadeActivity : BasePlayActivity() {
@@ -17,6 +20,7 @@ class FadeActivity : BasePlayActivity() {
     private var handler: Handler? = null
     private var runnable: Runnable? = null
     private var animationType = AnimationType.FADE
+    private var adapter: ImagePagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +31,26 @@ class FadeActivity : BasePlayActivity() {
 
         handler = Handler(Looper.getMainLooper())
         viewPager = findViewById(R.id.viewPager)
+        adapter = ImagePagerAdapter(this, imageUrls)
+        viewPager.adapter = adapter
+        viewPager.isUserInputEnabled = false//禁止手动滑动
+        // 处理边界情况
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                applyAnimation()
+            }
+        })
+        initPageData()
+    }
+
+    private fun initPageData(){
+        displaySeconds =  (PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
+        displayEffect =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
+        photoOrder =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.PHOTO_ORDER,0)
+        musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
+        timerMinutes =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
+
         val spFileList = PreferencesHelper.getInstance(this).loadFileList()
         if(spFileList.isNotEmpty()){
             spFileList.forEach { file->
@@ -39,21 +63,15 @@ class FadeActivity : BasePlayActivity() {
                 "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
             ).toMutableList()
         }
-        // 设置适配器
-        viewPager.adapter = ImagePagerAdapter(this, imageUrls)
-        viewPager.isUserInputEnabled = false//禁止手动滑动
-
-
+        adapter?.setNewData(imageUrls)
         // 设置自动滑动
         startAutoScroll()
+    }
 
-        // 处理边界情况
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                applyAnimation()
-            }
-        })
+    @Subscribe(threadMode = ThreadMode.MAIN) // 确保在主线程中处理
+    fun onMessageEvent(event: MessageEvent) {
+        handler?.removeCallbacks(runnable!!)
+        initPageData()
     }
 
     private fun applyAnimation() {
@@ -79,9 +97,9 @@ class FadeActivity : BasePlayActivity() {
             val currentPosition = viewPager.currentItem
             val nextPosition = (currentPosition + 1) % imageUrls.size
             viewPager.setCurrentItem(nextPosition, true)
-            handler?.postDelayed(runnable!!, autoScrollInterval)
+            handler?.postDelayed(runnable!!, displaySeconds)
         }
-        handler?.postDelayed(runnable!!, autoScrollInterval)
+        handler?.postDelayed(runnable!!, displaySeconds)
     }
 
     private fun scrollNext(){

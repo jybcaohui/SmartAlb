@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
@@ -16,21 +15,42 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smart.album.utils.PreferencesHelper
+import com.smart.album.views.LoadingDialog
+import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
 
 
 open class BasePlayActivity : AppCompatActivity() {
 
-    var autoScrollInterval: Long = 10000 // 10 seconds
+//    private var displaySeconds:Int = 0
+//    private var photoOrder:Int = 0
+//    private var timerMinutes:Int = 0
+
+    var displaySeconds: Long = 10000 //轮播间隔时间（毫秒，10 seconds）
+    var displayEffect:Int = 0 //图片裁剪样式
+    var transitionEffect:Int = 0 //图片切换动效
+    var photoOrder:Int = 0 //文件排序
+    var timerMinutes: Int = 0 //运行时间（单位：分钟）
+    var musicOn = false//背景音乐开启（否）
+
     var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
     private var mediaPlayer: MediaPlayer? = null
-    private var musicOn = false
+    private var loadingDialog: LoadingDialog? = null
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        autoScrollInterval =  (PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
+        EventBus.getDefault().register(this)
+        loadingDialog = LoadingDialog()
+        displaySeconds =  (PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)*1000).toLong()
+        displayEffect =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
+        transitionEffect =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.TRANSITION_EFFECT,0)
+        photoOrder =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.PHOTO_ORDER,0)
+        musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
+        timerMinutes =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
+
+
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account == null) {
@@ -78,6 +98,7 @@ open class BasePlayActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        EventBus.getDefault().unregister(this)
         mediaPlayer?.stop()
         mediaPlayer?.release()
     }

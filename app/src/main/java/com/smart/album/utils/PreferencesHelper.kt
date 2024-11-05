@@ -13,9 +13,12 @@ class PreferencesHelper private constructor(context: Context) {
         private const val PREFS_NAME = "SmartAlbs"
         private const val LIST_KEY = "img_list"
         const val DISPLAY_TIME_SECONDS = "display_time_seconds"
+        const val DISPLAY_EFFECT = "display_effect"
+        const val TRANSITION_EFFECT = "transition_effect"
         const val PHOTO_ORDER = "photo_order"
         const val TIMER_MINUTES = "timer_minutes"
         const val BG_MUSIC_ON = "bg_music_on"
+        const val DRIVE_FOLDER_ID = "drive_folder_id"
 
         @Volatile
         private var INSTANCE: PreferencesHelper? = null

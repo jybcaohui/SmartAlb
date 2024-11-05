@@ -32,6 +32,8 @@
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".ScheduleSettingActivity"
             android:theme="@style/Theme.Setting"/>
+        <activity android:name=".DriveFileListActivity"
+            android:theme="@style/Theme.Setting"/>
 
         <receiver android:name=".receiver.TimerReceiver"
             android:exported="true">

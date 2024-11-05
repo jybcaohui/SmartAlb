@@ -48,9 +48,9 @@ class CrossFadeActivity : BasePlayActivity() {
             val currentPosition = viewPager.currentItem
             val nextPosition = (currentPosition + 1) % imageUrls.size
             viewPager.setCurrentItem(nextPosition, true)
-            handler?.postDelayed(runnable!!, autoScrollInterval)
+            handler?.postDelayed(runnable!!, displaySeconds)
         }
-        handler?.postDelayed(runnable!!, autoScrollInterval)
+        handler?.postDelayed(runnable!!, displaySeconds)
     }
 
 
