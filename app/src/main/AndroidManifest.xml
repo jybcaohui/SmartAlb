@@ -19,7 +19,7 @@
 <!--        <activity android:name=".FadeActivity"-->
 <!--        <activity android:name=".SlideActivity"-->
 <!--        <activity android:name=".CrossFadeActivity"-->
-        <activity android:name=".WelcomeActivity"
+        <activity android:name=".CrossFadeActivity"
             android:exported="true"
             android:theme="@style/TransparentTheme">
             <intent-filter>
