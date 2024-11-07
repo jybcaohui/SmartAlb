@@ -18,8 +18,7 @@
 <!--        <activity android:name=".MainActivity"-->
 <!--        <activity android:name=".FadeActivity"-->
 <!--        <activity android:name=".SlideActivity"-->
-<!--        <activity android:name=".CrossFadeActivity"-->
-        <activity android:name=".CrossFadeActivity"
+        <activity android:name=".WelcomeActivity"
             android:exported="true"
             android:theme="@style/TransparentTheme">
             <intent-filter>
@@ -31,6 +30,7 @@
         <activity android:name=".MainActivity"
             android:theme="@style/TransparentTheme" />
         <activity android:name=".FadeActivity"/>
+        <activity android:name=".CrossFadeActivity"/>
         <activity android:name=".SlideActivity"/>
         <activity android:name=".SettingActivity"
             android:theme="@style/Theme.Setting"/>

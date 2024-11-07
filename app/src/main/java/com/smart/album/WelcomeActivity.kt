@@ -13,7 +13,7 @@ class WelcomeActivity : BaseActivity() {
         when (transitionEffect) {
             1 -> {
                 //Cross Fade
-                startActivity(Intent(this@WelcomeActivity,SlideActivity::class.java))
+                startActivity(Intent(this@WelcomeActivity,CrossFadeActivity::class.java))
             }
             2 -> {
                 //Memory

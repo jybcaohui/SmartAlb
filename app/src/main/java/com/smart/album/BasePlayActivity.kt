@@ -25,7 +25,7 @@ open class BasePlayActivity : AppCompatActivity() {
 //    private var photoOrder:Int = 0
 //    private var timerMinutes:Int = 0
 
-    var displaySeconds: Long = 10000 //轮播间隔时间（毫秒，10 seconds）
+    var displaySeconds: Long = 10000 //轮播间隔时间（毫秒，10s，最低5s）
     var displayEffect:Int = 0 //图片裁剪样式
     var transitionEffect:Int = 0 //图片切换动效
     var photoOrder:Int = 0 //文件排序
@@ -48,6 +48,9 @@ open class BasePlayActivity : AppCompatActivity() {
         musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
         timerMinutes =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
 
+        if(displaySeconds < 5000){
+            displaySeconds = 5000
+        }
 
         // Check if already signed in
         val account = GoogleSignIn.getLastSignedInAccount(this)
