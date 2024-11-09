@@ -27,4 +27,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:alpha="0.0" />
+
+    <include layout="@layout/layout_weather"/>
 </RelativeLayout>

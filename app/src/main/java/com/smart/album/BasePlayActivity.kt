@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
 import kotlin.math.abs
+import kotlin.system.exitProcess
 
 
 open class BasePlayActivity : AppCompatActivity() {
@@ -133,14 +134,16 @@ open class BasePlayActivity : AppCompatActivity() {
                             or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     )
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.navigationBars())
-        }
-
         // 确保在API 21以上版本中应用
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setupTransparentStatusBar()
         }
+        // 隐藏底部导航栏
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            window.insetsController?.hide(WindowInsets.Type.navigationBars())
+//        }
+
+
     }
 
     private fun setupTransparentStatusBar() {
@@ -244,6 +247,13 @@ open class BasePlayActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity(); // 关闭所有属于当前任务的Activity
+        exitProcess(0); // 结束整个进程
     }
 }
 

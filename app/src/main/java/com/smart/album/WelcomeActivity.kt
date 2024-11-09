@@ -14,14 +14,17 @@ class WelcomeActivity : BaseActivity() {
             1 -> {
                 //Cross Fade
                 startActivity(Intent(this@WelcomeActivity,CrossFadeActivity::class.java))
+                finish()
             }
             2 -> {
                 //Memory
                 startActivity(Intent(this@WelcomeActivity,SlideActivity::class.java))
+                finish()
             }
             else -> {
                 // Fade
                 startActivity(Intent(this@WelcomeActivity,FadeActivity::class.java))
+                finish()
             }
         }
 
