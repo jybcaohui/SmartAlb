@@ -9,8 +9,8 @@ import android.renderscript.ScriptIntrinsicBlur
 
 object BlurBuilder {
 
-    private const val BITMAP_SCALE = 0.05f // 1/8
-    private const val BLUR_RADIUS = 25f // 默认的模糊半径
+    private const val BITMAP_SCALE = 0.125f // 1/8
+    private const val BLUR_RADIUS = 15f // 默认的模糊半径
 
     fun blur(context: Context, image: Bitmap): Bitmap {
         val width = (image.width * BITMAP_SCALE).toInt()

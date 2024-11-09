@@ -8,15 +8,19 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.smart.album.events.ImageDisplayEvent
 import com.smart.album.utils.BlurBuilder
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.PanningImageView
-import kotlin.math.max
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 class CrossFadeActivity : BasePlayActivity() {
@@ -35,47 +39,8 @@ class CrossFadeActivity : BasePlayActivity() {
         setNoTitle()
         setContentView(R.layout.activity_cross_fade)
         setStatusBar()
+        EventBus.getDefault().register(this)
 
-
-        imageView1 = findViewById(R.id.imageView1)
-        imageView2 = findViewById(R.id.imageView2)
-        panImageView1 = findViewById(R.id.panImageView1)
-        panImageView2 = findViewById(R.id.panImageView2)
-        displayEffect =  PreferencesHelper.getInstance(this).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
-        when(displayEffect){
-            0->{
-                //panImageView
-                imageView1.visibility = View.GONE
-                imageView1.visibility = View.GONE
-                panImageView1.visibility = View.VISIBLE
-                panImageView2.visibility = View.VISIBLE
-            }
-            1->{
-                //fitCenter
-                imageView1.visibility = View.VISIBLE
-                imageView1.visibility = View.VISIBLE
-                panImageView1.visibility = View.GONE
-                panImageView2.visibility = View.GONE
-                imageView1.scaleType = ImageView.ScaleType.FIT_CENTER
-                imageView2.scaleType = ImageView.ScaleType.FIT_CENTER
-            }
-            2->{
-                //centerCrop
-                imageView1.visibility = View.VISIBLE
-                imageView1.visibility = View.VISIBLE
-                panImageView1.visibility = View.GONE
-                panImageView2.visibility = View.GONE
-                imageView1.scaleType = ImageView.ScaleType.CENTER_CROP
-                imageView2.scaleType = ImageView.ScaleType.CENTER_CROP
-            }
-            3,4->{
-                //zoom
-                imageView1.visibility = View.VISIBLE
-                imageView1.visibility = View.VISIBLE
-                panImageView1.visibility = View.GONE
-                panImageView2.visibility = View.GONE
-            }
-        }
         // 图片 URL 列表
         imageUrls = listOf(
             "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
@@ -85,11 +50,73 @@ class CrossFadeActivity : BasePlayActivity() {
         )
         handler = Handler(Looper.getMainLooper())
 
+        imageView1 = findViewById(R.id.imageView1)
+        imageView2 = findViewById(R.id.imageView2)
+        panImageView1 = findViewById(R.id.panImageView1)
+        panImageView2 = findViewById(R.id.panImageView2)
+        initPageData()
+    }
+
+    private fun initPageData(){
+        displayEffect =  PreferencesHelper.getInstance(this).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
+        Log.d("initPageData===","initPageData==="+displayEffect)
+
+        when(displayEffect){
+            0->{
+                //panImageView
+                imageView1.visibility = View.GONE
+                imageView2.visibility = View.GONE
+                panImageView1.visibility = View.VISIBLE
+                panImageView2.visibility = View.VISIBLE
+            }
+            1->{
+                //fitCenter
+                imageView1.visibility = View.VISIBLE
+                imageView2.visibility = View.VISIBLE
+                panImageView1.visibility = View.GONE
+                panImageView2.visibility = View.GONE
+                imageView1.scaleType = ImageView.ScaleType.FIT_CENTER
+                imageView2.scaleType = ImageView.ScaleType.FIT_CENTER
+            }
+            2->{
+                //centerCrop
+                imageView1.visibility = View.VISIBLE
+                imageView2.visibility = View.VISIBLE
+                panImageView1.visibility = View.GONE
+                panImageView2.visibility = View.GONE
+                imageView1.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView2.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+            3->{
+                //zoom
+                imageView1.visibility = View.VISIBLE
+                imageView2.visibility = View.VISIBLE
+                panImageView1.visibility = View.GONE
+                panImageView2.visibility = View.GONE
+                imageView1.scaleType = ImageView.ScaleType.FIT_CENTER
+                imageView2.scaleType = ImageView.ScaleType.FIT_CENTER
+            }
+            4->{
+                //zoom
+                imageView1.visibility = View.VISIBLE
+                imageView2.visibility = View.VISIBLE
+                panImageView1.visibility = View.GONE
+                panImageView2.visibility = View.GONE
+                imageView1.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView2.scaleType = ImageView.ScaleType.CENTER_CROP
+            }
+        }
         // 加载第一张图片
         loadNextImage()
-
         // 启动定时器
         startSlideshow()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: ImageDisplayEvent) {
+        Log.d("event==",""+event.message)
+        handler.removeCallbacksAndMessages(null)
+        initPageData()
     }
 
     private fun loadNextImage() {
@@ -97,13 +124,9 @@ class CrossFadeActivity : BasePlayActivity() {
         currentIndex = (currentIndex + 1) % imageUrls.size
 
         if(displayEffect == 0){
+            //Pan 平移图片
             val currentImageView = if (currentIndex % 2 == 0) panImageView1 else panImageView2
             val nextImageView = if (currentIndex % 2 == 0) panImageView2 else panImageView1
-//            nextImageView.requestLayout()
-//            nextImageView.invalidate()
-//            Glide.with(this)
-//                .load(imageUrls[currentIndex])
-//                .into(nextImageView)
             Glide.with(this)
                 .asBitmap()
                 .load(imageUrls[currentIndex])
@@ -135,28 +158,29 @@ class CrossFadeActivity : BasePlayActivity() {
                         // 切换到另一张图片
                         nextImageView.setImageDrawable(BitmapDrawable(resources,resource))
 
-                        if(displayEffect == 3 || displayEffect == 4){
+                        if(displayEffect == 3){
                             //Zoom 动画
-                            val viewWidth = resources.displayMetrics.widthPixels
-                            val viewHeight = resources.displayMetrics.heightPixels
-                            // 计算图片初始尺寸
-                            val imageWidth = resource.width
-                            val imageHeight = resource.height
-
-                            // 计算初始缩放比例
-                            var initialScale = 1.0f
-                            var finalScale = if(viewWidth > imageWidth && viewHeight > imageHeight){
-                                max(viewWidth.toFloat() / imageWidth, viewHeight.toFloat() / imageHeight)
-                            } else {
-                                max( imageWidth / viewWidth.toFloat(), imageHeight / viewHeight.toFloat())
-                            }
-                            if(finalScale < 3.0f){
-                                finalScale = 3.0f
-                            }
+                            val initialScale = 3.0f
+                            val finalScale = 1.0f
                             nextImageView.scaleX = initialScale
                             nextImageView.scaleY = initialScale
-                            val scaleXAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleX", finalScale,initialScale)
-                            val scaleYAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleY", finalScale,initialScale)
+                            val scaleXAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleX", initialScale, finalScale)
+                            val scaleYAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleY", initialScale, finalScale)
+
+                            val animatorSet = AnimatorSet()
+                            // 将动画添加到AnimatorSet中
+                            animatorSet.playTogether(scaleXAnimator, scaleYAnimator)
+                            animatorSet.duration = 3000  // 动画持续时间2秒
+                            // 开始动画
+                            animatorSet.start()
+                        } else if(displayEffect == 4){
+                            //Focus 动画
+                            val initialScale = 1.0f
+                            val finalScale = 2.0f
+                            nextImageView.scaleX = initialScale
+                            nextImageView.scaleY = initialScale
+                            val scaleXAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleX", initialScale, finalScale)
+                            val scaleYAnimator = ObjectAnimator.ofFloat(nextImageView, "scaleY", initialScale, finalScale)
 
                             val animatorSet = AnimatorSet()
                             // 将动画添加到AnimatorSet中
@@ -201,6 +225,7 @@ class CrossFadeActivity : BasePlayActivity() {
         super.onDestroy()
         // 清除 Handler 中的所有回调
         handler.removeCallbacksAndMessages(null)
+        EventBus.getDefault().unregister(this)
     }
 }
 

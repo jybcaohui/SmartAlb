@@ -28,5 +28,13 @@
         android:id="@+id/zoom_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/focus_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         android:visibility="gone"/>
 </FrameLayout>

@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -31,7 +33,6 @@
             android:theme="@style/TransparentTheme" />
         <activity android:name=".FadeActivity"/>
         <activity android:name=".CrossFadeActivity"/>
-        <activity android:name=".SlideActivity"/>
         <activity android:name=".SettingActivity"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".ScheduleSettingActivity"
@@ -42,7 +43,7 @@
         <receiver android:name=".receiver.TimerReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.example.ACTION_ALARM" />
+                <action android:name="com.smart.album.START_APP_DAILY" />
             </intent-filter>
         </receiver>
     </application>

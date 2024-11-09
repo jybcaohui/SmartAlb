@@ -253,7 +253,7 @@ open class BasePlayActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finishAffinity(); // 关闭所有属于当前任务的Activity
-        exitProcess(0); // 结束整个进程
+//        exitProcess(0); // 结束整个进程
     }
 }
 

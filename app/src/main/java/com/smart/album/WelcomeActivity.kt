@@ -18,7 +18,7 @@ class WelcomeActivity : BaseActivity() {
             }
             2 -> {
                 //Memory
-                startActivity(Intent(this@WelcomeActivity,SlideActivity::class.java))
+                startActivity(Intent(this@WelcomeActivity,CrossFadeActivity::class.java))
                 finish()
             }
             else -> {
