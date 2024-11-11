@@ -46,6 +46,10 @@
                 <action android:name="com.smart.album.START_APP_DAILY" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".utils.StartupService"
+            android:exported="false" />
     </application>
 
 </manifest>

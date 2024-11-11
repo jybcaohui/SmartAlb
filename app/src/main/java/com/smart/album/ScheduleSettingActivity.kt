@@ -17,7 +17,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.smart.album.receiver.TimerReceiver
@@ -50,12 +52,19 @@ class ScheduleSettingActivity : AppCompatActivity() {
         }
         tvSave.setOnClickListener{
 
+            val constraints = Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .setRequiresCharging(true)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+
             // 创建一个周期性的工作请求
             val dailyWorkRequest = PeriodicWorkRequest.Builder(
                 DailyStartupWorker::class.java,
                 15, // 每24小时
                 TimeUnit.MINUTES
-            ).build()
+            ).setConstraints(constraints).build()
 
             // 将工作请求加入WorkManager
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
@@ -64,12 +73,41 @@ class ScheduleSettingActivity : AppCompatActivity() {
                 dailyWorkRequest
             )
 
+
+            // 创建一个周期性的工作请求
+            val dailyWorkRequest2 = PeriodicWorkRequest.Builder(
+                DailyStartupWorker::class.java,
+                20, // 每24小时
+                TimeUnit.MINUTES
+            ).setConstraints(constraints).build()
+
+            // 将工作请求加入WorkManager
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "daily_startup_work_2",
+                ExistingPeriodicWorkPolicy.REPLACE, // 如果已存在相同名称的任务，则替换
+                dailyWorkRequest2
+            )
+
+            // 创建一个周期性的工作请求
+            val dailyWorkRequest3 = PeriodicWorkRequest.Builder(
+                DailyStartupWorker::class.java,
+                25, // 每24小时
+                TimeUnit.MINUTES
+            ).setConstraints(constraints).build()
+
+            // 将工作请求加入WorkManager
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "daily_startup_work_3",
+                ExistingPeriodicWorkPolicy.REPLACE, // 如果已存在相同名称的任务，则替换
+                dailyWorkRequest3
+            )
+
 //            if (!isExactAlarmsAllowed()) {
 //                // 引导用户到设置界面开启权限
 //                showPermissionDialog()
 //            } else {
 //                // 设置精确闹钟
-//                setDailyAlarm()
+                setDailyAlarm()
 //            }
         }
 
@@ -77,7 +115,7 @@ class ScheduleSettingActivity : AppCompatActivity() {
 
     private fun setDailyAlarm() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent("com.example.myapp.START_APP_DAILY")
+        val intent = Intent("com.smart.album.START_APP_DAILY")
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
