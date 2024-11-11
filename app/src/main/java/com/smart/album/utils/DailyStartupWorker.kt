@@ -13,7 +13,7 @@ class DailyStartupWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun doWork(): Result {
-        Log.d("doWork====","doWork====")
+        Log.d("Startup==","doWork====")
 
         // 启动前台服务
         val intent = Intent(applicationContext, StartupService::class.java)

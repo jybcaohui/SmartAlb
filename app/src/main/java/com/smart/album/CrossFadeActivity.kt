@@ -28,7 +28,7 @@ class CrossFadeActivity : BasePlayActivity() {
     private lateinit var imageView2: ImageView
     private lateinit var panImageView1: PanningImageView
     private lateinit var panImageView2: PanningImageView
-    private lateinit var imageUrls: List<String>
+    private var imageUrls: MutableList<String> = mutableListOf()
     private lateinit var handler: Handler
     private var currentIndex = 0
 
@@ -43,11 +43,9 @@ class CrossFadeActivity : BasePlayActivity() {
 
         // 图片 URL 列表
         imageUrls = listOf(
-            "https://pic.616pic.com/bg_w1180/00/19/28/7gPY8D8pmb.jpg",
-            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
             "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
-            "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
-        )
+            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
+        ).toMutableList()
         handler = Handler(Looper.getMainLooper())
 
         imageView1 = findViewById(R.id.imageView1)
@@ -128,20 +126,8 @@ class CrossFadeActivity : BasePlayActivity() {
             val currentImageView = if (currentIndex % 2 == 0) panImageView1 else panImageView2
             val nextImageView = if (currentIndex % 2 == 0) panImageView2 else panImageView1
             Glide.with(this)
-                .asBitmap()
                 .load(imageUrls[currentIndex])
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                        // 切换到另一张图片
-                        nextImageView.setImageBitmap(resource)
-                        nextImageView.requestLayout()
-                        nextImageView.invalidate()
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        // 图片加载失败时的处理
-                    }
-                })
+                .into(nextImageView)
             // 开始淡入淡出动画
             crossFade(currentImageView, nextImageView)
         } else {

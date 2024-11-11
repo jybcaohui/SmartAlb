@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.smart.album.R
 import com.smart.album.WelcomeActivity
@@ -41,6 +42,7 @@ class StartupService : Service() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .build()
 
+        Log.d("Startup==","startForeground====")
         // 启动服务为前台服务
         startForeground(1, notification)
 
