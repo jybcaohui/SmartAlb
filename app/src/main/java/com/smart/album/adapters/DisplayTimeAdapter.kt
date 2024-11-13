@@ -75,7 +75,7 @@ class DisplayTimeAdapter(private val context: Context, private var items: List<S
 
         if(position == items.size-1){
             viewHolder.edCustom.visibility = View.VISIBLE
-            viewHolder.edCustom.addTextChangedListener(object : TextWatcher {
+            var textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
 
@@ -101,7 +101,15 @@ class DisplayTimeAdapter(private val context: Context, private var items: List<S
                     Log.d("TAG===", "222seconds: $seconds")
                     onItemSelectedListener?.onItemSelected(item, position, seconds)
                 }
-            })
+            }
+            // 设置焦点变化监听器
+            viewHolder.edCustom.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    viewHolder.edCustom.addTextChangedListener(textWatcher)
+                } else {
+                    viewHolder.edCustom.removeTextChangedListener(textWatcher)
+                }
+            }
             viewHolder.spinner.visibility = View.VISIBLE
             // 创建 ArrayAdapter，使用字符串数组作为数据源
             val adapter = ArrayAdapter.createFromResource(
