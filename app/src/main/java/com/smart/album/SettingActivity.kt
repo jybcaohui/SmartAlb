@@ -22,7 +22,6 @@ import com.google.api.services.drive.DriveScopes
 import com.smart.album.adapters.DisplayEffectAdapter
 import com.smart.album.adapters.DisplayTimeAdapter
 import com.smart.album.adapters.PhotoOrderAdapter
-import com.smart.album.adapters.TimerAdapter
 import com.smart.album.adapters.TransitionEffectAdapter
 import com.smart.album.events.CloseCurrentEvent
 import com.smart.album.events.ImageDisplayEvent
@@ -67,20 +66,11 @@ class SettingActivity : BaseActivity() {
         "Modified Date (Earliest first)",
         "Modified Date (Latest first)")
 
-    private val timerOptions = listOf(
-        "Off",
-        "5 Minutes",
-        "15 Minutes",
-        "30 Minutes",
-        "1 hour",
-        "2 hours",
-        "Custom:")
 
     private var displaySeconds:Int = 0
     private var displayEffect:Int = 0
     private var transitionEffect:Int = 0
     private var photoOrder:Int = 0
-    private var timerMinutes:Int = 0
 
 
 
@@ -123,10 +113,10 @@ class SettingActivity : BaseActivity() {
             showPhotoOrderPop()
         }
         findViewById<ConstraintLayout>(R.id.cl_schedules).setOnClickListener{
-            startActivity(Intent(this, ScheduleSettingActivity::class.java))
+            startActivity(Intent(this, SettingScheduleActivity::class.java))
         }
         findViewById<ConstraintLayout>(R.id.cl_timer).setOnClickListener{
-            showTimerPop()
+            startActivity(Intent(this, SettingTimerActivity::class.java))
         }
         findViewById<ConstraintLayout>(R.id.cl_sync).setOnClickListener{
             showLoading()
@@ -272,55 +262,6 @@ class SettingActivity : BaseActivity() {
             PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.PHOTO_ORDER,photoOrder)
             popupWindow.dismiss()
             EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
-        }
-        popupWindow.animationStyle = R.style.PopupAnimation
-        popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)
-    }
-
-    private fun showTimerPop() {
-        timerMinutes =  PreferencesHelper.getInstance(this@SettingActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
-        Log.d("TAG===", "timerMinutes: $timerMinutes")
-        val popupView = layoutInflater.inflate(R.layout.bottom_pop, null)
-        val popupWindow = PopupWindow(
-            popupView,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            true
-        )
-        popupView.findViewById<LinearLayout>(R.id.lv_root).setOnClickListener { popupWindow.dismiss() }
-        val listView = popupView.findViewById<ListView>(R.id.listView)
-        val tvDone = popupView.findViewById<TextView>(R.id.tv_done)
-        val selectedItemPosition:Int = when (timerMinutes) {
-            0 -> 0
-            5 -> 1
-            15 -> 2
-            30 -> 3
-            60 -> 4
-            120 -> 5
-            else -> 6
-        }
-        val adapter = if(selectedItemPosition == 6){
-            TimerAdapter(this, timerOptions, selectedItemPosition, timerMinutes)
-        } else {
-            TimerAdapter(this, timerOptions, selectedItemPosition, 0)
-        }
-        adapter.onItemSelectedListener = object : TimerAdapter.OnItemSelectedListener {
-            override fun onItemSelected(item: String, position: Int, minutes:Int) {
-                when (position) {
-                    0 -> timerMinutes = 0
-                    1 -> timerMinutes = 5
-                    2 -> timerMinutes = 15
-                    3 -> timerMinutes = 30
-                    4 -> timerMinutes = 60
-                    5 -> timerMinutes = 120
-                    6 -> timerMinutes = minutes
-                }
-            }
-        }
-        listView.adapter = adapter
-        tvDone.setOnClickListener{
-            PreferencesHelper.getInstance(this@SettingActivity).saveInt(PreferencesHelper.TIMER_MINUTES,timerMinutes)
-            popupWindow.dismiss()
         }
         popupWindow.animationStyle = R.style.PopupAnimation
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)

@@ -4,8 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -14,7 +12,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Constraints
@@ -22,12 +19,11 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.smart.album.receiver.TimerReceiver
 import com.smart.album.utils.DailyStartupWorker
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-class ScheduleSettingActivity : AppCompatActivity() {
+class SettingScheduleActivity : BaseActivity() {
 
     private lateinit var rootLayout: LinearLayout
     private lateinit var imgBack: ImageView

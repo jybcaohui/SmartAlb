@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -35,7 +36,9 @@
         <activity android:name=".CrossFadeActivity"/>
         <activity android:name=".SettingActivity"
             android:theme="@style/Theme.Setting"/>
-        <activity android:name=".ScheduleSettingActivity"
+        <activity android:name=".SettingScheduleActivity"
+            android:theme="@style/Theme.Setting"/>
+        <activity android:name=".SettingTimerActivity"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".DriveFileListActivity"
             android:theme="@style/Theme.Setting"/>

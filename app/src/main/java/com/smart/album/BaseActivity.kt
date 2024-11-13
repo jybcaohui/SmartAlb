@@ -14,6 +14,15 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadingDialog = LoadingDialog()
+
+        // 添加到活动列表
+        App.instance.addActivity(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 从活动列表中移除
+        App.instance.removeActivity(this)
     }
 
     fun showLoading(){

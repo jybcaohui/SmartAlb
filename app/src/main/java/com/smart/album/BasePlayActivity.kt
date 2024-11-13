@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
-import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -17,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
 import kotlin.math.abs
-import kotlin.system.exitProcess
 
 
 open class BasePlayActivity : AppCompatActivity() {
@@ -69,6 +67,9 @@ open class BasePlayActivity : AppCompatActivity() {
         window.decorView.findViewById<View>(android.R.id.content)?.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
+
+        // 添加到活动列表
+        App.instance.addActivity(this)
     }
 
     private fun initMusic(){
@@ -103,6 +104,8 @@ open class BasePlayActivity : AppCompatActivity() {
 
         mediaPlayer?.stop()
         mediaPlayer?.release()
+        // 从活动列表中移除
+        App.instance.removeActivity(this)
     }
 
     enum class AnimationType {
