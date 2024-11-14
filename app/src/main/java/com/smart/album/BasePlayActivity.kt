@@ -5,24 +5,24 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.documentfile.provider.DocumentFile
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
+import org.apache.http.util.TextUtils
 import kotlin.math.abs
 
 
 open class BasePlayActivity : AppCompatActivity() {
 
-//    private var displaySeconds:Int = 0
-//    private var photoOrder:Int = 0
-//    private var timerMinutes:Int = 0
 
     var displaySeconds: Long = 10000 //轮播间隔时间（毫秒，10s，最低5s）
     var displayEffect:Int = 0 //图片裁剪样式
@@ -31,7 +31,6 @@ open class BasePlayActivity : AppCompatActivity() {
     var timerMinutes: Int = 0 //运行时间（单位：分钟）
     var musicOn = false//背景音乐开启（否）
 
-    var imgDrivePath: String = "https://drive.google.com/uc?export=download&id=" // GoogleDrive 图片加载前缀
 
     private var mediaPlayer: MediaPlayer? = null
     private var loadingDialog: LoadingDialog? = null
@@ -51,16 +50,9 @@ open class BasePlayActivity : AppCompatActivity() {
             displaySeconds = 5000
         }
 
-        // Check if already signed in
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account == null) {
+        val imageUrls = getImagesFromFolder()
+        if (imageUrls.isNullOrEmpty()) {
             startActivity(Intent(this, MainActivity::class.java))
-        } else {
-            // 加载列表
-            val spFileList = PreferencesHelper.getInstance(this).loadFileList()
-            if(spFileList.isEmpty()){
-                startActivity(Intent(this, MainActivity::class.java))
-            }
         }
 
         // 根布局点击事件
@@ -257,6 +249,25 @@ open class BasePlayActivity : AppCompatActivity() {
         super.onBackPressed()
         finishAffinity(); // 关闭所有属于当前任务的Activity
 //        exitProcess(0); // 结束整个进程
+    }
+
+
+    fun getImagesFromFolder(): MutableList<String> {
+        val images = mutableListOf<String>()
+        val localUriStr = PreferencesHelper.getInstance(this).getStr(PreferencesHelper.LOCAL_FOLDER_URI)
+        if(TextUtils.isEmpty(localUriStr)){
+            return images
+        }
+        val pickedDir = DocumentFile.fromTreeUri(this, Uri.parse(localUriStr))
+        pickedDir?.listFiles()?.forEach { file ->
+            if (file.isFile) {
+                val name = file.name ?: ""
+                if (name.lowercase().endsWith(".jpg") || name.lowercase().endsWith(".jpeg") || name.lowercase().endsWith(".png")) {
+                    images.add(file.uri.toString())//file.uri
+                }
+            }
+        }
+        return images
     }
 }
 

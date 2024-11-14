@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
 import com.smart.album.events.CloseCurrentEvent
+import com.smart.album.events.ImageDisplayEvent
 import com.smart.album.events.RefreshPageDataEvent
 import com.smart.album.utils.PreferencesHelper
 import org.greenrobot.eventbus.EventBus
@@ -53,18 +54,7 @@ class FadeActivity : BasePlayActivity() {
         musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
         timerMinutes =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
 
-        val spFileList = PreferencesHelper.getInstance(this).loadFileList()
-        if(spFileList.isNotEmpty()){
-            spFileList.forEach { file->
-                imageUrls.add(imgDrivePath+file.id)
-                Log.d("spFileList==","image==="+file.name)
-            }
-        } else {
-            //默认图
-            imageUrls = listOf(
-                "https://p5.itc.cn/q_70/images03/20221108/bc97e952dd2f4fa4a0a27402bcd8cad9.jpeg"
-            ).toMutableList()
-        }
+        imageUrls = getImagesFromFolder()
         adapter?.setNewData(imageUrls)
         // 设置自动滑动
         startAutoScroll()
@@ -73,14 +63,27 @@ class FadeActivity : BasePlayActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: RefreshPageDataEvent) {
         Log.d("event==",""+event.message)
-        handler?.removeCallbacks(runnable!!)
+        if(runnable != null){
+            handler?.removeCallbacks(runnable!!)
+        }
+        initPageData()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: ImageDisplayEvent) {
+        Log.d("event==",""+event.message)
+        if(runnable != null){
+            handler?.removeCallbacks(runnable!!)
+        }
         initPageData()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CloseCurrentEvent) {
         Log.d("event==",""+event.message)
-        handler?.removeCallbacks(runnable!!)
+        if(runnable != null){
+            handler?.removeCallbacks(runnable!!)
+        }
         finish()
     }
 
@@ -117,7 +120,9 @@ class FadeActivity : BasePlayActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler?.removeCallbacks(runnable!!)
+        if(runnable != null){
+            handler?.removeCallbacks(runnable!!)
+        }
         EventBus.getDefault().unregister(this)
     }
 

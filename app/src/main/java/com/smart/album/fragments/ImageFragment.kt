@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -88,7 +89,7 @@ class ImageFragment : Fragment() {
                 focusImageView.visibility = View.GONE
                 imageUrl?.let {
                     Glide.with(this)
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(panImageView)
                 }
             }
@@ -102,7 +103,7 @@ class ImageFragment : Fragment() {
                 imageUrl?.let {
                     Glide.with(this)
                         .asBitmap()
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 // 虚化背景
@@ -128,7 +129,7 @@ class ImageFragment : Fragment() {
                 focusImageView.visibility = View.GONE
                 imageUrl?.let {
                     Glide.with(this)
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(cropImageView)
                 }
             }
@@ -142,7 +143,7 @@ class ImageFragment : Fragment() {
                 imageUrl?.let {
                     Glide.with(this)
                         .asBitmap()
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 // 虚化背景
@@ -183,7 +184,7 @@ class ImageFragment : Fragment() {
                 imageUrl?.let {
                     Glide.with(this)
                         .asBitmap()
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 // 设置图片到 ImageView
@@ -235,7 +236,7 @@ class ImageFragment : Fragment() {
                 imageUrl?.let {
                     Glide.with(this)
                         .asBitmap()
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 // 虚化背景
@@ -270,7 +271,7 @@ class ImageFragment : Fragment() {
                 imageUrl?.let {
                     Glide.with(this)
                         .asBitmap()
-                        .load(it)
+                        .load(Uri.parse(it))
                         .into(object : CustomTarget<Bitmap>() {
                             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                 // 设置图片到 ImageView

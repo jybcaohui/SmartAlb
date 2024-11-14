@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +15,9 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.smart.album.events.CloseCurrentEvent
 import com.smart.album.events.ImageDisplayEvent
+import com.smart.album.events.RefreshPageDataEvent
 import com.smart.album.utils.BlurBuilder
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.PanningImageView
@@ -42,10 +45,7 @@ class CrossFadeActivity : BasePlayActivity() {
         EventBus.getDefault().register(this)
 
         // 图片 URL 列表
-        imageUrls = listOf(
-            "https://www.kuhw.com/d/file/p/2021/10-22/0d9525784ee4e7a74746eae20258bb79.jpg",
-            "https://photocdn.sohu.com/20150826/mp29415155_1440604461249_2.jpg",
-        ).toMutableList()
+        imageUrls = getImagesFromFolder()
         handler = Handler(Looper.getMainLooper())
 
         imageView1 = findViewById(R.id.imageView1)
@@ -111,10 +111,24 @@ class CrossFadeActivity : BasePlayActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: RefreshPageDataEvent) {
+        Log.d("event==",""+event.message)
+        handler.removeCallbacksAndMessages(null)
+        initPageData()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: ImageDisplayEvent) {
         Log.d("event==",""+event.message)
         handler.removeCallbacksAndMessages(null)
         initPageData()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: CloseCurrentEvent) {
+        Log.d("event==",""+event.message)
+        handler.removeCallbacksAndMessages(null)
+        finish()
     }
 
     private fun loadNextImage() {
@@ -126,7 +140,7 @@ class CrossFadeActivity : BasePlayActivity() {
             val currentImageView = if (currentIndex % 2 == 0) panImageView1 else panImageView2
             val nextImageView = if (currentIndex % 2 == 0) panImageView2 else panImageView1
             Glide.with(this)
-                .load(imageUrls[currentIndex])
+                .load(Uri.parse(imageUrls[currentIndex]))
                 .into(nextImageView)
             // 开始淡入淡出动画
             crossFade(currentImageView, nextImageView)
@@ -135,7 +149,7 @@ class CrossFadeActivity : BasePlayActivity() {
             val nextImageView = if (currentIndex % 2 == 0) imageView2 else imageView1
             Glide.with(this)
                 .asBitmap()
-                .load(imageUrls[currentIndex])
+                .load(Uri.parse(imageUrls[currentIndex]))
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         // 虚化背景
