@@ -1,27 +1,23 @@
 package com.smart.album
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.os.Build
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.provider.Settings
-import android.widget.EditText
+import android.text.TextUtils
+import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.TimePicker
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.smart.album.utils.DailyStartupWorker
+import com.smart.album.utils.PreferencesHelper
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
+
 
 class SettingScheduleActivity : BaseActivity() {
 
@@ -29,168 +25,129 @@ class SettingScheduleActivity : BaseActivity() {
     private lateinit var imgBack: ImageView
     private lateinit var tvTitle: TextView
     private lateinit var tvSave: TextView
-    private lateinit var edHour: EditText
-    private lateinit var edMinute: EditText
+    private lateinit var tvStartTime: TextView
+    private lateinit var tvStopTime: TextView
+    private lateinit var switchStart: Switch
+    private lateinit var switchStop: Switch
+    private lateinit var startTimePicker: TimePicker
+    private lateinit var stopTimePicker: TimePicker
+    private var startTime:String = ""
+    private var startOn:Boolean = false
+    private var stopTime:String = ""
+    private var stopOn:Boolean = false
 
+    @SuppressLint("DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_schedule)
         rootLayout = findViewById(R.id.root)
         imgBack = findViewById(R.id.img_back)
         tvTitle = findViewById(R.id.tv_title)
-        edHour = findViewById(R.id.ed_hour)
-        edMinute = findViewById(R.id.ed_minute)
         tvSave = findViewById(R.id.tv_save)
+        tvStartTime = findViewById(R.id.tv_start_time)
+        tvStopTime = findViewById(R.id.tv_stop_time)
+        startTimePicker = findViewById(R.id.startTimePicker)
+        stopTimePicker = findViewById(R.id.stopTimePicker)
+        switchStart = findViewById(R.id.switch_start)
+        switchStop = findViewById(R.id.switch_stop)
+        stopTimePicker = findViewById(R.id.stopTimePicker)
         tvTitle.text = getString(R.string.schedule_setting)
 
         imgBack.setOnClickListener{
             finish()
         }
+
+        // 设置开关状态改变监听器
+        switchStart.setOnCheckedChangeListener { _, isChecked ->
+            startOn = isChecked
+        }
+        // 设置开关状态改变监听器
+        switchStop.setOnCheckedChangeListener { _, isChecked ->
+            stopOn = isChecked
+        }
+
+        // 监听时间改变
+        startTimePicker.setOnTimeChangedListener { _, hourOfDay, minute -> // 在这里处理时间变化
+        }
+
+        stopTimePicker.setOnTimeChangedListener { _, hourOfDay, minute -> // 在这里处理时间变化
+        }
+
+        //默认开关状态
+        startOn = PreferencesHelper.getInstance(this@SettingScheduleActivity).getBoolean(PreferencesHelper.SCHEDULE_START_ON,false)
+        stopOn = PreferencesHelper.getInstance(this@SettingScheduleActivity).getBoolean(PreferencesHelper.SCHEDULE_STOP_ON,false)
+        switchStart.setChecked(startOn)
+        switchStop.setChecked(stopOn)
+        //TimePicker默认时间
+        startTime = PreferencesHelper.getInstance(this@SettingScheduleActivity).getStr(PreferencesHelper.SCHEDULE_START_TIME).toString()
+        stopTime = PreferencesHelper.getInstance(this@SettingScheduleActivity).getStr(PreferencesHelper.SCHEDULE_STOP_TIME).toString()
+        Log.d("Startup==", "init====startTime===$startTime")
+        Log.d("Startup==", "init====stopTime===$stopTime")
+        if(!TextUtils.isEmpty(startTime) && startTime.split(":").size == 2){
+            startTimePicker.hour = startTime.split(":")[0].toInt()
+            startTimePicker.minute = startTime.split(":")[1].toInt()
+            tvStartTime.text = startTime
+        }
+        if(!TextUtils.isEmpty(stopTime) && stopTime.split(":").size == 2){
+            stopTimePicker.hour = stopTime.split(":")[0].toInt()
+            stopTimePicker.minute = stopTime.split(":")[1].toInt()
+            tvStopTime.text = stopTime
+        }
         tvSave.setOnClickListener{
+            startTime = String.format("%02d", startTimePicker.hour)+":"+String.format("%02d", startTimePicker.minute)
+            PreferencesHelper.getInstance(this@SettingScheduleActivity).saveStr(PreferencesHelper.SCHEDULE_START_TIME,startTime)
+            PreferencesHelper.getInstance(this@SettingScheduleActivity).saveBoolean(PreferencesHelper.SCHEDULE_START_ON,startOn)
+            tvStartTime.text = startTime
 
-            val constraints = Constraints.Builder()
-                .setRequiresBatteryNotLow(true)
-                .setRequiresCharging(true)
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
-
-            // 创建一个周期性的工作请求
-            val dailyWorkRequest = PeriodicWorkRequest.Builder(
-                DailyStartupWorker::class.java,
-                15, // 每24小时
-                TimeUnit.MINUTES
-            ).setConstraints(constraints).build()
-
-            // 将工作请求加入WorkManager
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "daily_startup_work",
-                ExistingPeriodicWorkPolicy.REPLACE, // 如果已存在相同名称的任务，则替换
-                dailyWorkRequest
-            )
+            stopTime = String.format("%02d", stopTimePicker.hour)+":"+String.format("%02d", stopTimePicker.minute)
+            PreferencesHelper.getInstance(this@SettingScheduleActivity).saveStr(PreferencesHelper.SCHEDULE_STOP_TIME,stopTime)
+            PreferencesHelper.getInstance(this@SettingScheduleActivity).saveBoolean(PreferencesHelper.SCHEDULE_STOP_ON,stopOn)
+            tvStopTime.text = stopTime
 
 
-            // 创建一个周期性的工作请求
-            val dailyWorkRequest2 = PeriodicWorkRequest.Builder(
-                DailyStartupWorker::class.java,
-                20, // 每24小时
-                TimeUnit.MINUTES
-            ).setConstraints(constraints).build()
+            Log.d("Startup==","startTime====$startTime")
+            Log.d("Startup==","startOn===$startOn")
+            Log.d("Startup==","stopTime====$stopTime")
+            Log.d("Startup==","stopOn===$stopOn")
 
-            // 将工作请求加入WorkManager
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "daily_startup_work_2",
-                ExistingPeriodicWorkPolicy.REPLACE, // 如果已存在相同名称的任务，则替换
-                dailyWorkRequest2
-            )
-
-            // 创建一个周期性的工作请求
-            val dailyWorkRequest3 = PeriodicWorkRequest.Builder(
-                DailyStartupWorker::class.java,
-                25, // 每24小时
-                TimeUnit.MINUTES
-            ).setConstraints(constraints).build()
-
-            // 将工作请求加入WorkManager
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "daily_startup_work_3",
-                ExistingPeriodicWorkPolicy.REPLACE, // 如果已存在相同名称的任务，则替换
-                dailyWorkRequest3
-            )
-
-//            if (!isExactAlarmsAllowed()) {
-//                // 引导用户到设置界面开启权限
-//                showPermissionDialog()
-//            } else {
-//                // 设置精确闹钟
-                setDailyAlarm()
-//            }
+            scheduleStartDailyWork()
+            Toast.makeText(this, "定时任务已设置", Toast.LENGTH_SHORT).show()
+            Log.d("Startup==","scheduleDailyWork====")
+            finish()
         }
 
     }
+    private fun scheduleStartDailyWork() {
+        val initialDelay = calculateInitialDelay()
 
-    private fun setDailyAlarm() {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent("com.smart.album.START_APP_DAILY")
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            } else {
-                PendingIntent.FLAG_UPDATE_CURRENT
-            })
+        // 创建一个一次性的工作请求
+        val workRequest = OneTimeWorkRequestBuilder<DailyStartupWorker>()
+            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+            .addTag("daily_work_tag") // 可选：添加标签以便后续管理
+            .build()
 
-        var hour = edHour.text.toString().toInt()
-        var minute = edMinute.text.toString().toInt()
-        // 设置定时任务的时间
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, hour) // 例如，每天早上8点
-        calendar.set(Calendar.MINUTE, minute)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        if (calendar.timeInMillis < System.currentTimeMillis()) {
-            // 如果设置的时间已经过去，那么就将时间改为第二天的同一时间
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-        }
-
-
-        // 设置每天重复
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
+        // 使用WorkManager来调度任务
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            "daily_work",
+            ExistingWorkPolicy.REPLACE,
+            workRequest
         )
-        Toast.makeText(this, "定时任务已设置", Toast.LENGTH_SHORT).show()
     }
 
-    private fun isExactAlarmsAllowed(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true // 在API级别低于31的设备上，默认允许精确闹钟
-        }
-    }
-
-    companion object {
-        const val REQUEST_CODE_SCHEDULE_EXACT_ALARM = 1
-    }
-
-    private fun showPermissionDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("精确闹钟权限")
-            .setMessage("为了能够每天定时启动应用，请允许设置精确闹钟。")
-            .setPositiveButton("前往设置") { _, _ ->
-                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                    data = android.net.Uri.fromParts("package", packageName, null)
-                }
-                startActivityForResult(intent, REQUEST_CODE_SCHEDULE_EXACT_ALARM)
-            }
-            .setNegativeButton("取消") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_SCHEDULE_EXACT_ALARM) {
-            if (isExactAlarmsAllowed()) {
-                // 用户授予了权限，现在可以设置精确闹钟
-                setDailyAlarm()
-            } else {
-                // 用户拒绝了权限，处理这种情况
-                showPermissionDialog()
+    // 计算初始延迟
+    private fun calculateInitialDelay(): Long {
+        val now = Calendar.getInstance()
+        val nextRun = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 8)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            if (now.after(this)) {
+                add(Calendar.DAY_OF_MONTH, 1)
             }
         }
+//        return nextRun.timeInMillis - now.timeInMillis
+        return 1000 * 60 * 2//3分钟
     }
 
 }

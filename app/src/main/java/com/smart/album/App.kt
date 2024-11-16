@@ -1,6 +1,10 @@
 package com.smart.album
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +22,8 @@ class App : Application() {
         super.onCreate()
         instance = this
         startCountdown()
+
+        createNotificationChannel(this)
     }
 
 
@@ -69,5 +75,19 @@ class App : Application() {
     // 从列表中移除Activity
     fun removeActivity(activity: android.app.Activity) {
         activityList.remove(activity)
+    }
+
+    fun createNotificationChannel(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Your Channel Name"
+            val descriptionText = "Your Channel Description"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("your_channel_id", name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }

@@ -20,6 +20,8 @@
     <string name="folder_title">Folders on your google drive</string>
     <string name="timer_tips">Shutdown in</string>
     <string name="permission_tips">Please grant the necessary permissions</string>
+    <string name="setting_schedule_start_time">Start At:</string>
+    <string name="setting_schedule_stop_time">Stop At:</string>
 
     <string-array name="custom_unit">
         <item>Seconds</item>

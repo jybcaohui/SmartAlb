@@ -7,28 +7,103 @@
     android:orientation="vertical">
     <include layout="@layout/layout_top_bar"/>
 
-    <EditText
-        android:id="@+id/ed_hour"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Hour"/>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingHorizontal="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:text="@string/setting_schedule_start_time"/>
+                <TextView
+                    android:id="@+id/tv_start_time"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="12dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/third_color"
+                    android:text="08:00"/>
+                <Switch
+                    android:id="@+id/switch_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:switchMinWidth="40dp" />
 
-    <EditText
-        android:id="@+id/ed_minute"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="Minute"/>
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_save"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:background="@color/main_color"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:text="@string/setting_done"/>
+            <TimePicker
+                android:id="@+id/startTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/second_color"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:paddingHorizontal="16dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:text="@string/setting_schedule_stop_time"/>
+                <TextView
+                    android:id="@+id/tv_stop_time"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="12dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/third_color"
+                    android:text="20:00"/>
+                <Switch
+                    android:id="@+id/switch_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:switchMinWidth="40dp" />
+
+            </LinearLayout>
+
+
+            <TimePicker
+                android:id="@+id/stopTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner" />
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:background="@drawable/btn_main"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:text="@string/setting_done"/>
+        </LinearLayout>
+    </ScrollView>
+
+
+
 </LinearLayout>

@@ -20,6 +20,10 @@ class PreferencesHelper private constructor(context: Context) {
         const val BG_MUSIC_ON = "bg_music_on"
         const val DRIVE_FOLDER_ID = "drive_folder_id"
         const val LOCAL_FOLDER_URI = "local_folder_uri_str"
+        const val SCHEDULE_START_TIME = "schedule_start_time"
+        const val SCHEDULE_START_ON = "schedule_start_on"
+        const val SCHEDULE_STOP_TIME = "schedule_stop_time"
+        const val SCHEDULE_STOP_ON = "schedule_stop_on"
 
         @Volatile
         private var INSTANCE: PreferencesHelper? = null
