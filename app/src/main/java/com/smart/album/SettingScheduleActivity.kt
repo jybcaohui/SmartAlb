@@ -10,13 +10,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.TimePicker
 import android.widget.Toast
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import com.smart.album.utils.DailyStartupWorker
 import com.smart.album.utils.PreferencesHelper
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
 
 
 class SettingScheduleActivity : BaseActivity() {
@@ -111,43 +105,15 @@ class SettingScheduleActivity : BaseActivity() {
             Log.d("Startup==","stopOn===$stopOn")
 
             scheduleStartDailyWork()
-            Toast.makeText(this, "定时任务已设置", Toast.LENGTH_SHORT).show()
+            if(stopOn && !TextUtils.isEmpty(stopTime)){
+                App.instance.startAutoStopCountdown()
+            }
+
+            Toast.makeText(this, "Set up for success", Toast.LENGTH_SHORT).show()
             Log.d("Startup==","scheduleDailyWork====")
             finish()
         }
 
-    }
-    private fun scheduleStartDailyWork() {
-        val initialDelay = calculateInitialDelay()
-
-        // 创建一个一次性的工作请求
-        val workRequest = OneTimeWorkRequestBuilder<DailyStartupWorker>()
-            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-            .addTag("daily_work_tag") // 可选：添加标签以便后续管理
-            .build()
-
-        // 使用WorkManager来调度任务
-        WorkManager.getInstance(this).enqueueUniqueWork(
-            "daily_work",
-            ExistingWorkPolicy.REPLACE,
-            workRequest
-        )
-    }
-
-    // 计算初始延迟
-    private fun calculateInitialDelay(): Long {
-        val now = Calendar.getInstance()
-        val nextRun = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 8)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            if (now.after(this)) {
-                add(Calendar.DAY_OF_MONTH, 1)
-            }
-        }
-//        return nextRun.timeInMillis - now.timeInMillis
-        return 1000 * 60 * 2//3分钟
     }
 
 }

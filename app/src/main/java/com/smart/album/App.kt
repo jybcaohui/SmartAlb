@@ -8,12 +8,14 @@ import android.os.Build
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.text.TextUtils
 import com.smart.album.utils.PreferencesHelper
+import java.util.Calendar
 import kotlin.system.exitProcess
 
 class App : Application() {
     private val countdownHandler = Handler(Looper.getMainLooper())
+    private val countdownAutoStopHandler = Handler(Looper.getMainLooper())
     companion object {
         lateinit var instance: App
         var timerLast = 0L//定时关闭，剩余时间(毫秒)
@@ -22,11 +24,15 @@ class App : Application() {
         super.onCreate()
         instance = this
         startCountdown()
+        startAutoStopCountdown()
 
         createNotificationChannel(this)
     }
 
 
+    /**
+     * Timer 运行时长定时关闭
+     */
      fun startCountdown() {
          val timerMinutes =  PreferencesHelper.getInstance(this).getInt(
              PreferencesHelper.TIMER_MINUTES,0)
@@ -89,5 +95,51 @@ class App : Application() {
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    /**
+     * 如果自动关闭按钮开启
+     * 且Timer运行时长定时未开启，或者Timer运行时长定时大于自动关闭定时时长，则开启自动关闭倒计时
+     * 该方法会先执行关闭应用操作
+     * Timer运行时长定时未开启的情况下，startCountdown无论如何都运行，保证TimerSetting中有数据展示
+     */
+    fun startAutoStopCountdown() {
+        //定时
+        val timerMillis=  PreferencesHelper.getInstance(this).getInt(
+            PreferencesHelper.TIMER_MINUTES,0) * 60 * 1000
+        val autoStopDelay  = calculateAutoStopDelay()
+        countdownAutoStopHandler.removeCallbacksAndMessages(null)
+        if(autoStopDelay > 0 && (timerMillis == 0 || timerMillis > autoStopDelay)){
+            val runnable = Runnable {
+                // 尝试关闭应用程序
+                closeApp()
+            }
+            // 倒计时毫秒
+            countdownAutoStopHandler.postDelayed(runnable, autoStopDelay)
+        }
+    }
+
+
+    // 计算延迟关闭时间(毫秒),定时关闭按钮关闭或未设置时间时，返回0，不开启自动关闭
+    private fun calculateAutoStopDelay(): Long {
+        val stopTime = PreferencesHelper.getInstance(this).getStr(
+            PreferencesHelper.SCHEDULE_STOP_TIME).toString()
+        val stopOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.SCHEDULE_STOP_ON,false)
+        if(stopOn && !TextUtils.isEmpty(stopTime) && stopTime.split(":").size == 2){
+            val hour = stopTime.split(":")[0].toInt()
+            val minute = stopTime.split(":")[1].toInt()
+            val now = Calendar.getInstance()
+            val nextRun = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                if (now.after(this)) {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+            }
+            return nextRun.timeInMillis - now.timeInMillis
+        }
+        return 0
     }
 }

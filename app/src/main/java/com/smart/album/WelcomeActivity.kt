@@ -8,6 +8,10 @@ class WelcomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
+
+        //每次进入应用，开启下一次自动打开的worker
+        scheduleStartDailyWork()
+
         val transitionEffect =  PreferencesHelper.getInstance(this@WelcomeActivity).getInt(
             PreferencesHelper.TRANSITION_EFFECT,0)
         when (transitionEffect) {
