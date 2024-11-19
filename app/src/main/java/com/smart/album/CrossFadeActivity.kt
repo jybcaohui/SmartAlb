@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -26,10 +28,16 @@ import com.smart.album.views.PanningImageView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 
 
 class CrossFadeActivity : BasePlayActivity() {
     private lateinit var lvRoot: RelativeLayout
+    private lateinit var lvWeather: ConstraintLayout
+    private lateinit var tvDate: TextView
+    private lateinit var tvAddress: TextView
+    private lateinit var tvTemp: TextView
+    private lateinit var imgWeather: ImageView
     private lateinit var imageView1: ImageView
     private lateinit var imageView2: ImageView
     private lateinit var panImageView1: PanningImageView
@@ -52,6 +60,11 @@ class CrossFadeActivity : BasePlayActivity() {
         lvRoot.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
+        lvWeather = findViewById(R.id.lv_weather)
+        tvDate = findViewById(R.id.tv_date)
+        tvAddress = findViewById(R.id.tv_address)
+        tvTemp = findViewById(R.id.tv_temp)
+        imgWeather = findViewById(R.id.img_weather)
 
         // 图片 URL 列表
         imageUrls = getImagesFromFolder()
@@ -62,6 +75,29 @@ class CrossFadeActivity : BasePlayActivity() {
         panImageView1 = findViewById(R.id.panImageView1)
         panImageView2 = findViewById(R.id.panImageView2)
         initPageData()
+
+        getCurrentWeather{ response->
+            try {
+                val data = JSONObject(response)
+                if(data.has("location") && data.has("current")){
+                    val address = data.getJSONObject("location").getString("name")
+                    val localtime = data.getJSONObject("location").getString("localtime")
+                    val weatherStr = data.getJSONObject("current").getJSONObject("condition").getString("text")
+                    val weatherIcon = "https:"+data.getJSONObject("current").getJSONObject("condition").getString("icon")
+                    val tempC = data.getJSONObject("current").getString("temp_c") + "°C"//摄氏度，temp_f-华氏度
+                    val dateStr = dateFormat(localtime)
+
+                    lvWeather.visibility = View.VISIBLE
+                    tvDate.text = dateStr
+                    tvAddress.text = address
+                    tvTemp.text = tempC
+                    Glide.with(this)
+                        .load(weatherIcon)
+                        .into(imgWeather)
+                }
+            } catch (_:Exception){
+            }
+        }
     }
 
     private fun initPageData(){

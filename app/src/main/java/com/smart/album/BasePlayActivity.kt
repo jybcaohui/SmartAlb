@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -15,9 +16,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.smart.album.utils.NetworkUtils
+import com.smart.album.utils.OkhttpUtil
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
 import org.apache.http.util.TextUtils
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.math.abs
 
 
@@ -263,6 +272,42 @@ open class BasePlayActivity : AppCompatActivity() {
             }
         }
         return images
+    }
+
+    /**
+     * 获取外网IP
+     */
+    private fun getNetworkIp(onResponse: (String?) -> Unit){
+        val ipGetUrl = "https://api.ipify.org/"
+        OkhttpUtil.makeSimpleGetRequest(this,ipGetUrl) { response ->
+            if (response != null && !TextUtils.isEmpty(response)) {
+                onResponse(response)
+            }
+        }
+    }
+
+    fun getCurrentWeather(onResponse: (String?) -> Unit){
+        getNetworkIp{ response->
+            val networkIp = response
+            Log.d("Weather===", "networkIp=$networkIp")
+            if(!TextUtils.isEmpty(networkIp)){
+                val url = "https://api.weatherapi.com/v1/current.json?key=5f383fdc66bf4bbaa7340042240611&q=$networkIp"//&lang=
+                Log.d("Weather===", "url=$url")
+                OkhttpUtil.makeSimpleGetRequest(this,url) { response ->
+                    if (response != null) {
+                        onResponse(response)
+                    }
+                }
+            }
+        }
+    }
+
+    fun dateFormat(inputDateStr:String):String{
+        val inputFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        val date = inputFormatter.parse(inputDateStr)
+        val outputFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
+        val outputDateStr = outputFormatter.format(date)
+        return outputDateStr  // 输出: November 19, 2024
     }
 }
 

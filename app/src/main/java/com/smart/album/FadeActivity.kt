@@ -1,14 +1,20 @@
 package com.smart.album
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.smart.album.adapters.ImagePagerAdapter
 import com.smart.album.events.CloseCurrentEvent
 import com.smart.album.events.ImageDisplayEvent
@@ -17,10 +23,16 @@ import com.smart.album.utils.PreferencesHelper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 
 
 class FadeActivity : BasePlayActivity() {
     private lateinit var lvRoot: RelativeLayout
+    private lateinit var lvWeather: ConstraintLayout
+    private lateinit var tvDate: TextView
+    private lateinit var tvAddress: TextView
+    private lateinit var tvTemp: TextView
+    private lateinit var imgWeather: ImageView
     private lateinit var viewPager: ViewPager2
     private var imageUrls: MutableList<String> = mutableListOf()
     private var handler: Handler? = null
@@ -40,6 +52,11 @@ class FadeActivity : BasePlayActivity() {
         lvRoot.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
+        lvWeather = findViewById(R.id.lv_weather)
+        tvDate = findViewById(R.id.tv_date)
+        tvAddress = findViewById(R.id.tv_address)
+        tvTemp = findViewById(R.id.tv_temp)
+        imgWeather = findViewById(R.id.img_weather)
 
         handler = Handler(Looper.getMainLooper())
         viewPager = findViewById(R.id.viewPager)
@@ -54,6 +71,29 @@ class FadeActivity : BasePlayActivity() {
             }
         })
         initPageData()
+
+        getCurrentWeather{ response->
+            try {
+                val data = JSONObject(response)
+                if(data.has("location") && data.has("current")){
+                    val address = data.getJSONObject("location").getString("name")
+                    val localtime = data.getJSONObject("location").getString("localtime")
+                    val weatherStr = data.getJSONObject("current").getJSONObject("condition").getString("text")
+                    val weatherIcon = "https:"+data.getJSONObject("current").getJSONObject("condition").getString("icon")
+                    val tempC = data.getJSONObject("current").getString("temp_c") + "°C"//摄氏度，temp_f-华氏度
+                    val dateStr = dateFormat(localtime)
+
+                    lvWeather.visibility = View.VISIBLE
+                    tvDate.text = dateStr
+                    tvAddress.text = address
+                    tvTemp.text = tempC
+                    Glide.with(this)
+                        .load(weatherIcon)
+                        .into(imgWeather)
+                }
+            } catch (_:Exception){
+            }
+        }
     }
 
     private fun initPageData(){
