@@ -2,6 +2,7 @@ package com.smart.album
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -12,6 +13,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -27,6 +29,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 
 class CrossFadeActivity : BasePlayActivity() {
+    private lateinit var lvRoot: RelativeLayout
     private lateinit var imageView1: ImageView
     private lateinit var imageView2: ImageView
     private lateinit var panImageView1: PanningImageView
@@ -43,6 +46,12 @@ class CrossFadeActivity : BasePlayActivity() {
         setContentView(R.layout.activity_cross_fade)
         setStatusBar()
         EventBus.getDefault().register(this)
+
+        // 根布局点击事件
+        lvRoot = findViewById(R.id.lv_root)
+        lvRoot.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
 
         // 图片 URL 列表
         imageUrls = getImagesFromFolder()

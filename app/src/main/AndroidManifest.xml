@@ -40,10 +40,6 @@
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingTimerActivity"
             android:theme="@style/Theme.Setting"/>
-        <activity android:name=".DriveFileListActivity"
-            android:theme="@style/Theme.Setting"/>
-        <activity android:name=".LocalFileListActivity"
-            android:theme="@style/Theme.Setting"/>
 
         <receiver android:name=".receiver.TimerReceiver"
             android:exported="true">

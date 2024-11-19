@@ -37,6 +37,7 @@
                     android:text="08:00"/>
                 <Switch
                     android:id="@+id/switch_start"
+                    android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
@@ -46,6 +47,7 @@
 
             <TimePicker
                 android:id="@+id/startTimePicker"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner" />
@@ -77,6 +79,7 @@
                     android:text="20:00"/>
                 <Switch
                     android:id="@+id/switch_stop"
+                    android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
@@ -87,11 +90,13 @@
 
             <TimePicker
                 android:id="@+id/stopTimePicker"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner" />
             <TextView
                 android:id="@+id/tv_save"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="40dp"

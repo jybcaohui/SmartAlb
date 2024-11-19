@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
     <EditText
         android:id="@+id/ed_custom"
+        android:focusable="true"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:maxLength="3"
@@ -30,6 +31,7 @@
         />
     <Spinner
         android:id="@+id/spinner"
+        android:focusable="true"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:visibility="gone"
@@ -38,6 +40,7 @@
         app:layout_constraintStart_toEndOf="@+id/ed_custom"/>
     <RadioButton
         android:id="@+id/radioButton"
+        android:focusable="true"
         android:layout_width="50dp"
         android:layout_height="60dp"
         android:buttonTint="@color/radio_button_color"

@@ -55,11 +55,6 @@ open class BasePlayActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        // 根布局点击事件
-        window.decorView.findViewById<View>(android.R.id.content)?.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-        }
-
         // 添加到活动列表
         App.instance.addActivity(this)
     }

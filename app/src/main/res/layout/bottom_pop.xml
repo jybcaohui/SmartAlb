@@ -25,6 +25,8 @@
             android:paddingVertical="10dp"/>
         <ListView
             android:id="@+id/listView"
+            android:focusable="true"
+            android:descendantFocusability="afterDescendants"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/white"
@@ -38,6 +40,7 @@
             app:layout_constraintHeight_max="360dp"/>
         <TextView
             android:id="@+id/tv_done"
+            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"

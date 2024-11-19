@@ -1,11 +1,13 @@
 package com.smart.album
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.RelativeLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.smart.album.adapters.ImagePagerAdapter
 import com.smart.album.events.CloseCurrentEvent
@@ -18,6 +20,7 @@ import org.greenrobot.eventbus.ThreadMode
 
 
 class FadeActivity : BasePlayActivity() {
+    private lateinit var lvRoot: RelativeLayout
     private lateinit var viewPager: ViewPager2
     private var imageUrls: MutableList<String> = mutableListOf()
     private var handler: Handler? = null
@@ -32,6 +35,12 @@ class FadeActivity : BasePlayActivity() {
         setContentView(R.layout.activity_fade)
         setStatusBar()
         EventBus.getDefault().register(this)
+        // 根布局点击事件
+        lvRoot = findViewById(R.id.lv_root)
+        lvRoot.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
         handler = Handler(Looper.getMainLooper())
         viewPager = findViewById(R.id.viewPager)
         adapter = ImagePagerAdapter(this, imageUrls)
