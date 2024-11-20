@@ -13,9 +13,16 @@
     <color name="black_trans">#99000000</color>
     <color name="white_ee">#eeeeee</color>
     <color name="white_aa">#aaaaaa</color>
-    <color name="blue_trans">#992196F3</color>
     <color name="red">#E13232</color>
     <color name="red_trans">#99E13232</color>
+
+    <color name="select_stroke">#441E2F2A</color>
+    <color name="blue_trans">#992196F3</color>
+    <color name="blue_trans_sed">#08BFF6</color>
     <color name="green_trans">#991ADC98</color>
+    <color name="green_trans_sed">#23E40D</color>
+
+    <drawable name="white">#FFFFFFFF</drawable>
+    <drawable name="white_ed">#F2F2F2</drawable>
 
 </resources>

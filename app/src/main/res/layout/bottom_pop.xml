@@ -26,6 +26,7 @@
         <ListView
             android:id="@+id/listView"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:descendantFocusability="afterDescendants"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -41,6 +42,7 @@
         <TextView
             android:id="@+id/tv_done"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -38,6 +39,8 @@
                 <Switch
                     android:id="@+id/switch_start"
                     android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:background="@drawable/btn_white_selecor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
@@ -48,6 +51,10 @@
             <TimePicker
                 android:id="@+id/startTimePicker"
                 android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusUp="@+id/switch_start"
+                android:nextFocusDown="@+id/switch_stop"
+                android:background="@drawable/btn_white_selecor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner" />
@@ -80,6 +87,10 @@
                 <Switch
                     android:id="@+id/switch_stop"
                     android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:nextFocusUp="@+id/startTimePicker"
+                    android:nextFocusDown="@+id/stopTimePicker"
+                    android:background="@drawable/btn_white_selecor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
@@ -91,18 +102,23 @@
             <TimePicker
                 android:id="@+id/stopTimePicker"
                 android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:nextFocusUp="@+id/switch_stop"
+                android:nextFocusDown="@+id/tv_save"
+                android:background="@drawable/btn_white_selecor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner" />
             <TextView
                 android:id="@+id/tv_save"
                 android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="30dp"
                 android:gravity="center"
-                android:background="@drawable/btn_main"
+                android:background="@drawable/btn_main_selecor"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:text="@string/setting_done"/>

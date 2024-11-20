@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,18 +27,28 @@ import com.smart.album.adapters.PhotoOrderAdapter
 import com.smart.album.adapters.TransitionEffectAdapter
 import com.smart.album.events.CloseCurrentEvent
 import com.smart.album.events.ImageDisplayEvent
-import com.smart.album.utils.PreferencesHelper
 import com.smart.album.events.RefreshPageDataEvent
+import com.smart.album.utils.PreferencesHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 
+
 class SettingActivity : BaseActivity() {
 
     private lateinit var rootLayout: LinearLayout
     private lateinit var imgBack: ImageView
+    private lateinit var clDisplayTime: ConstraintLayout
+    private lateinit var clDisplayEffect: ConstraintLayout
+    private lateinit var clTransitionEffect: ConstraintLayout
+    private lateinit var clPhoto: ConstraintLayout
+    private lateinit var clSchedules: ConstraintLayout
+    private lateinit var clTimer: ConstraintLayout
+    private lateinit var clSync: ConstraintLayout
+
+    private lateinit var clMusic: ConstraintLayout
     private lateinit var imgMusic: ImageView
     private var driveService: Drive? = null
 
@@ -80,17 +92,50 @@ class SettingActivity : BaseActivity() {
         rootLayout = findViewById(R.id.root)
         imgBack = findViewById(R.id.img_back)
         imgMusic = findViewById(R.id.img_music)
+        clMusic = findViewById(R.id.cl_music)
 
         imgBack.setOnClickListener{
             finish()
         }
+
+        clDisplayTime = findViewById(R.id.cl_display_time)
+        clDisplayTime.requestFocus()
+        clDisplayTime.setOnClickListener{
+            showDisplayTimePop()
+        }
+        clDisplayEffect=findViewById(R.id.cl_display_effect)
+        clDisplayEffect.setOnClickListener{
+            showDisplayEffectPop()
+        }
+        clTransitionEffect = findViewById(R.id.cl_transition_effect)
+        clTransitionEffect.setOnClickListener{
+            showTransitionEffectPop()
+        }
+        clPhoto = findViewById(R.id.cl_photo)
+        clPhoto.setOnClickListener{
+            showPhotoOrderPop()
+        }
+        clSchedules = findViewById(R.id.cl_schedules)
+        clSchedules.setOnClickListener{
+            startActivity(Intent(this, SettingScheduleActivity::class.java))
+        }
+        clTimer = findViewById(R.id.cl_timer)
+        clTimer.setOnClickListener{
+            startActivity(Intent(this, SettingTimerActivity::class.java))
+        }
+        clSync = findViewById(R.id.cl_sync)
+        clSync.setOnClickListener{
+            showLoading()
+            listFiles()
+        }
+
         var musicOn = PreferencesHelper.getInstance(this@SettingActivity).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
         if(musicOn){
             imgMusic.setImageResource(R.mipmap.ic_lock)
         } else {
             imgMusic.setImageResource(R.mipmap.ic_unlock)
         }
-        imgMusic.setOnClickListener{
+        clMusic.setOnClickListener{
             musicOn = !musicOn
             PreferencesHelper.getInstance(this@SettingActivity).saveBoolean(PreferencesHelper.BG_MUSIC_ON,musicOn)
             if(musicOn){
@@ -98,29 +143,6 @@ class SettingActivity : BaseActivity() {
             } else {
                 imgMusic.setImageResource(R.mipmap.ic_unlock)
             }
-        }
-
-        findViewById<ConstraintLayout>(R.id.cl_display_time).setOnClickListener{
-            showDisplayTimePop()
-        }
-        findViewById<ConstraintLayout>(R.id.cl_display_effect).setOnClickListener{
-            showDisplayEffectPop()
-        }
-        findViewById<ConstraintLayout>(R.id.cl_transition_effect).setOnClickListener{
-            showTransitionEffectPop()
-        }
-        findViewById<ConstraintLayout>(R.id.cl_photo).setOnClickListener{
-            showPhotoOrderPop()
-        }
-        findViewById<ConstraintLayout>(R.id.cl_schedules).setOnClickListener{
-            startActivity(Intent(this, SettingScheduleActivity::class.java))
-        }
-        findViewById<ConstraintLayout>(R.id.cl_timer).setOnClickListener{
-            startActivity(Intent(this, SettingTimerActivity::class.java))
-        }
-        findViewById<ConstraintLayout>(R.id.cl_sync).setOnClickListener{
-            showLoading()
-            listFiles()
         }
 
     }
@@ -135,6 +157,41 @@ class SettingActivity : BaseActivity() {
         )
         popupView.findViewById<LinearLayout>(R.id.lv_root).setOnClickListener { popupWindow.dismiss() }
         val listView = popupView.findViewById<ListView>(R.id.listView)
+
+
+        listView.requestFocus()
+        // 设置方向键监听器
+        listView.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                when (keyCode) {
+                    KeyEvent.KEYCODE_DPAD_UP -> {
+                        // 上方向键
+                        val currentPosition = listView.selectedItemPosition
+                        if (currentPosition > 0) {
+                            listView.setSelection(currentPosition - 1)
+                        }
+                        return@setOnKeyListener true
+                    }
+                    KeyEvent.KEYCODE_DPAD_DOWN -> {
+                        // 下方向键
+                        val currentPosition = listView.selectedItemPosition
+                        if (currentPosition < listView.count - 1) {
+                            listView.setSelection(currentPosition + 1)
+                        }
+                        return@setOnKeyListener true
+                    }
+                    KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                        // 中心选择键或回车键
+                        val currentPosition = listView.selectedItemPosition
+                        Log.d("FocusTest", "Item clicked at position: $currentPosition")
+                        // 处理选中项的操作
+                        return@setOnKeyListener true
+                    }
+                }
+            }
+            false
+        }
+
         val tvDone = popupView.findViewById<TextView>(R.id.tv_done)
         val selectedItemPosition:Int = when (displaySeconds) {
             10 -> 0

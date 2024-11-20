@@ -51,6 +51,7 @@ class SettingScheduleActivity : BaseActivity() {
             finish()
         }
 
+        switchStart.requestFocus()
         // 设置开关状态改变监听器
         switchStart.setOnCheckedChangeListener { _, isChecked ->
             startOn = isChecked

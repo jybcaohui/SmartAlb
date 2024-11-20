@@ -18,11 +18,12 @@
         <LinearLayout
             android:id="@+id/chooseButton"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:layout_marginTop="16dp"
-            android:background="@drawable/btn_green">
+            android:background="@drawable/btn_green_selecor">
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
@@ -41,11 +42,12 @@
         <LinearLayout
             android:id="@+id/settingButton"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:gravity="center"
             android:layout_marginTop="16dp"
-            android:background="@drawable/btn_blue">
+            android:background="@drawable/btn_blue_selecor">
             <ImageView
                 android:layout_width="17dp"
                 android:layout_height="17dp"

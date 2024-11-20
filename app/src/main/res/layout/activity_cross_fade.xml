@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/lv_root"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     android:background="@color/black">
 
     <ImageView

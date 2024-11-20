@@ -59,6 +59,7 @@ class SettingTimerActivity : BaseActivity() {
         }
         timerMinutes =  PreferencesHelper.getInstance(this@SettingTimerActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
         showTimerProgress()
+        lvTimer.requestFocus()
         lvTimer.setOnClickListener{
             showTimerPop()
         }

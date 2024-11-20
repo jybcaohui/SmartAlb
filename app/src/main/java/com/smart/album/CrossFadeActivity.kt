@@ -57,6 +57,7 @@ class CrossFadeActivity : BasePlayActivity() {
 
         // 根布局点击事件
         lvRoot = findViewById(R.id.lv_root)
+        lvRoot.requestFocus()
         lvRoot.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
