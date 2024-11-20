@@ -34,4 +34,40 @@
         <item>Hours</item>
     </string-array>
 
+    <string name="time_s_10">10 Seconds</string>
+    <string name="time_s_15">15 Seconds</string>
+    <string name="time_s_30">30 Seconds</string>
+    <string name="time_m_1">1 Minutes</string>
+    <string name="time_m_5">5 Minutes</string>
+    <string name="time_m_10">10 Minutes</string>
+    <string name="time_custom">Minutes</string>
+    <string name="time_toast">Please enter an integer greater than 10</string>
+
+
+    <string name="dis_effect_pan">Pan</string>
+    <string name="dis_effect_scale">Scale to Fit Center</string>
+    <string name="dis_effect_crop">Crop to Fit Center</string>
+    <string name="dis_effect_zoom">Zoom</string>
+    <string name="dis_effect_focus">Focus</string>
+
+    <string name="trans_effect_fade">Fade</string>
+    <string name="trans_effect_cross">Cross Fade</string>
+    <string name="trans_effect_memory">Memory</string>
+
+    <string name="file_shuffle">Shuffle</string>
+    <string name="file_random">Random</string>
+    <string name="file_az">Flle Name (A to Z)</string>
+    <string name="file_za">File Name (Z to A)</string>
+    <string name="file_earliest">Modified Date (Earliest first)</string>
+    <string name="file_latest">Modified Date (Latest first)</string>
+
+    <string name="close_m_0">Off</string>
+    <string name="close_m_5">5 Minutes</string>
+    <string name="close_m_15">15 Minutes</string>
+    <string name="close_m_30">30 Minutes</string>
+    <string name="close_m_60">1 hour</string>
+    <string name="close_m_120">2 hour</string>
+    <string name="close_custom">Minutes</string>
+    <string name="close_toast">Please enter an integer greater than 10</string>
+
 </resources>

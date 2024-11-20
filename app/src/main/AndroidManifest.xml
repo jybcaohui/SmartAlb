@@ -25,6 +25,7 @@
 <!--        <activity android:name=".SlideActivity"-->
         <activity android:name=".WelcomeActivity"
             android:exported="true"
+            android:launchMode="singleTask"
             android:theme="@style/TransparentTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,14 +34,32 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:theme="@style/TransparentTheme" />
-        <activity android:name=".FadeActivity"/>
-        <activity android:name=".CrossFadeActivity"/>
+            android:theme="@style/TransparentTheme"
+            android:launchMode="singleTask"/>
+        <activity android:name=".FadeActivity"
+            android:launchMode="singleTask"/>
+        <activity android:name=".CrossFadeActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".SettingActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingScheduleActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingTimerActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Setting"/>
+        <activity android:name=".SettingDisplayTimeActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Setting"/>
+        <activity android:name=".SettingDisplayEffectActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Setting"/>
+        <activity android:name=".SettingTransitionEffectActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.Setting"/>
+        <activity android:name=".SettingCountDownTimeActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
 
         <receiver android:name=".receiver.TimerReceiver"

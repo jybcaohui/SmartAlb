@@ -1,6 +1,7 @@
 package com.smart.album
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -58,12 +59,17 @@ class SettingTimerActivity : BaseActivity() {
             finish()
         }
         timerMinutes =  PreferencesHelper.getInstance(this@SettingTimerActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
-        showTimerProgress()
         lvTimer.requestFocus()
         lvTimer.setOnClickListener{
-            showTimerPop()
+            startActivity(Intent(this, SettingCountDownTimeActivity::class.java))
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        timerMinutes =  PreferencesHelper.getInstance(this@SettingTimerActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
+        showTimerProgress()
     }
 
     private fun showTimerProgress(){
@@ -89,56 +95,6 @@ class SettingTimerActivity : BaseActivity() {
             tvTimer.text = "Off"
             rvTimerProgress.visibility = View.GONE
         }
-    }
-
-    private fun showTimerPop() {
-        Log.d("TAG===", "timerMinutes: $timerMinutes")
-        val popupView = layoutInflater.inflate(R.layout.bottom_pop, null)
-        val popupWindow = PopupWindow(
-            popupView,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            true
-        )
-        popupView.findViewById<LinearLayout>(R.id.lv_root).setOnClickListener { popupWindow.dismiss() }
-        val listView = popupView.findViewById<ListView>(R.id.listView)
-        val tvDone = popupView.findViewById<TextView>(R.id.tv_done)
-        val selectedItemPosition:Int = when (timerMinutes) {
-            0 -> 0
-            5 -> 1
-            15 -> 2
-            30 -> 3
-            60 -> 4
-            120 -> 5
-            else -> 6
-        }
-        val adapter = if(selectedItemPosition == 6){
-            TimerAdapter(this, timerOptions, selectedItemPosition, timerMinutes)
-        } else {
-            TimerAdapter(this, timerOptions, selectedItemPosition, 0)
-        }
-        adapter.onItemSelectedListener = object : TimerAdapter.OnItemSelectedListener {
-            override fun onItemSelected(item: String, position: Int, minutes:Int) {
-                when (position) {
-                    0 -> timerMinutes = 0
-                    1 -> timerMinutes = 5
-                    2 -> timerMinutes = 15
-                    3 -> timerMinutes = 30
-                    4 -> timerMinutes = 60
-                    5 -> timerMinutes = 120
-                    6 -> timerMinutes = minutes
-                }
-            }
-        }
-        listView.adapter = adapter
-        tvDone.setOnClickListener{
-            PreferencesHelper.getInstance(this@SettingTimerActivity).saveInt(PreferencesHelper.TIMER_MINUTES,timerMinutes)
-            App.instance.startCountdown()
-            showTimerProgress()
-            popupWindow.dismiss()
-        }
-        popupWindow.animationStyle = R.style.PopupAnimation
-        popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.BOTTOM, 0, 0)
     }
 
     fun formatTime(seconds: Int): String {

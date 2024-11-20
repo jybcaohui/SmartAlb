@@ -43,7 +43,6 @@ class SettingActivity : BaseActivity() {
     private lateinit var clDisplayTime: ConstraintLayout
     private lateinit var clDisplayEffect: ConstraintLayout
     private lateinit var clTransitionEffect: ConstraintLayout
-    private lateinit var clPhoto: ConstraintLayout
     private lateinit var clSchedules: ConstraintLayout
     private lateinit var clTimer: ConstraintLayout
     private lateinit var clSync: ConstraintLayout
@@ -101,19 +100,18 @@ class SettingActivity : BaseActivity() {
         clDisplayTime = findViewById(R.id.cl_display_time)
         clDisplayTime.requestFocus()
         clDisplayTime.setOnClickListener{
-            showDisplayTimePop()
+//            showDisplayTimePop()
+            startActivity(Intent(this, SettingDisplayTimeActivity::class.java))
         }
         clDisplayEffect=findViewById(R.id.cl_display_effect)
         clDisplayEffect.setOnClickListener{
-            showDisplayEffectPop()
+//            showDisplayEffectPop()
+            startActivity(Intent(this, SettingDisplayEffectActivity::class.java))
         }
         clTransitionEffect = findViewById(R.id.cl_transition_effect)
         clTransitionEffect.setOnClickListener{
-            showTransitionEffectPop()
-        }
-        clPhoto = findViewById(R.id.cl_photo)
-        clPhoto.setOnClickListener{
-            showPhotoOrderPop()
+//            showTransitionEffectPop()
+            startActivity(Intent(this, SettingTransitionEffectActivity::class.java))
         }
         clSchedules = findViewById(R.id.cl_schedules)
         clSchedules.setOnClickListener{
