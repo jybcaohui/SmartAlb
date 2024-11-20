@@ -61,6 +61,8 @@ class App : Application() {
     }
 
     private fun closeApp() {
+        //清除定时关闭设置
+        PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.TIMER_MINUTES,0)
         // 这里可以添加更多的清理工作
         // 结束所有活动
         for (activity in activityList) {
