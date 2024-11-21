@@ -1,6 +1,7 @@
 package com.smart.album
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,10 @@ open class BaseActivity : AppCompatActivity() {
 
         // 添加到活动列表
         App.instance.addActivity(this)
+
+        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==0){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
     }
 
     override fun onDestroy() {

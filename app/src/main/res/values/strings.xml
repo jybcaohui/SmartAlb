@@ -14,7 +14,8 @@
     <string name="setting_others">OTHERS</string>
     <string name="setting_syn">Sync Interval</string>
     <string name="setting_syn_remind">To scan your photo library for update</string>
-    <string name="setting_screen">Screen Rotation</string>
+    <string name="setting_screen_h">Horizontal screen</string>
+    <string name="setting_screen_v">Vertical screen</string>
     <string name="setting_done">Done</string>
     <string name="schedule_setting">Schedule Setting</string>
     <string name="folder_title">Folders on your google drive</string>

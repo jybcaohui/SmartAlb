@@ -3,6 +3,7 @@ package com.smart.album
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
@@ -15,17 +16,11 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.smart.album.utils.NetworkUtils
 import com.smart.album.utils.OkhttpUtil
 import com.smart.album.utils.PreferencesHelper
 import com.smart.album.views.LoadingDialog
 import org.apache.http.util.TextUtils
-import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.abs
 
@@ -55,6 +50,10 @@ open class BasePlayActivity : AppCompatActivity() {
 
         if(displaySeconds < 5000){
             displaySeconds = 5000
+        }
+
+        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==0){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
 
         val imageUrls = getImagesFromFolder()

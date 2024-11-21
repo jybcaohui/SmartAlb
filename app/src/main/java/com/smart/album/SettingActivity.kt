@@ -40,12 +40,16 @@ class SettingActivity : BaseActivity() {
 
     private lateinit var rootLayout: LinearLayout
     private lateinit var imgBack: ImageView
+    private lateinit var img_h_check: ImageView
+    private lateinit var img_v_check: ImageView
     private lateinit var clDisplayTime: ConstraintLayout
     private lateinit var clDisplayEffect: ConstraintLayout
     private lateinit var clTransitionEffect: ConstraintLayout
     private lateinit var clSchedules: ConstraintLayout
     private lateinit var clTimer: ConstraintLayout
     private lateinit var clSync: ConstraintLayout
+    private lateinit var clScreenH: ConstraintLayout
+    private lateinit var clScreenV: ConstraintLayout
 
     private lateinit var clMusic: ConstraintLayout
     private lateinit var imgMusic: ImageView
@@ -121,10 +125,35 @@ class SettingActivity : BaseActivity() {
         clTimer.setOnClickListener{
             startActivity(Intent(this, SettingTimerActivity::class.java))
         }
-        clSync = findViewById(R.id.cl_sync)
-        clSync.setOnClickListener{
-            showLoading()
-            listFiles()
+//        clSync = findViewById(R.id.cl_sync)
+//        clSync.setOnClickListener{
+//            showLoading()
+//            listFiles()
+//        }
+
+        img_h_check = findViewById(R.id.img_h_check)
+        img_v_check = findViewById(R.id.img_v_check)
+        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==0){
+            img_h_check.visibility = View.VISIBLE
+            img_v_check.visibility = View.GONE
+        } else {
+            img_h_check.visibility = View.GONE
+            img_v_check.visibility = View.VISIBLE
+        }
+        clScreenH = findViewById(R.id.cl_screen_h)
+        clScreenH.setOnClickListener{
+            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.SCREEN_ORIENTATION,0)
+            EventBus.getDefault().post(CloseCurrentEvent("close playing activity"))
+            startActivity(Intent(this@SettingActivity,WelcomeActivity::class.java))
+            finish()
+        }
+
+        clScreenV = findViewById(R.id.cl_screen_v)
+        clScreenV.setOnClickListener{
+            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.SCREEN_ORIENTATION,1)
+            EventBus.getDefault().post(CloseCurrentEvent("close playing activity"))
+            startActivity(Intent(this@SettingActivity,WelcomeActivity::class.java))
+            finish()
         }
 
         var musicOn = PreferencesHelper.getInstance(this@SettingActivity).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
