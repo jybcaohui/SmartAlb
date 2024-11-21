@@ -17,6 +17,7 @@ class SettingDisplayTimeActivity : BaseActivity() {
     private var displaySeconds:Int = 0
     private lateinit var imgBack: ImageView
     private lateinit var tvTitle: TextView
+    private lateinit var lv5s: LinearLayout
     private lateinit var lv10s: LinearLayout
     private lateinit var lv15s: LinearLayout
     private lateinit var lv30s: LinearLayout
@@ -40,6 +41,7 @@ class SettingDisplayTimeActivity : BaseActivity() {
 
         displaySeconds =  PreferencesHelper.getInstance(this).getInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)
 
+        lv5s = findViewById(R.id.lv_5s)
         lv10s = findViewById(R.id.lv_10s)
         lv15s = findViewById(R.id.lv_15s)
         lv30s = findViewById(R.id.lv_30s)
@@ -50,6 +52,7 @@ class SettingDisplayTimeActivity : BaseActivity() {
         edTime = findViewById(R.id.ed_time)
 
         when (displaySeconds) {
+            5 -> lv5s.requestFocus()
             10 -> lv10s.requestFocus()
             15 -> lv15s.requestFocus()
             30 -> lv30s.requestFocus()
@@ -58,12 +61,17 @@ class SettingDisplayTimeActivity : BaseActivity() {
             600 -> lv10m.requestFocus()
             else -> {
                 lvCustom.requestFocus()
-                if(displaySeconds>600){
+                if(displaySeconds>=60){
                     edTime.setText((displaySeconds/60).toString())
                 }
             }
         }
 
+        lv5s.setOnClickListener{
+            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.DISPLAY_TIME_SECONDS,5)
+            EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
+            finish()
+        }
         lv10s.setOnClickListener{
             PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.DISPLAY_TIME_SECONDS,10)
             EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))
@@ -96,7 +104,7 @@ class SettingDisplayTimeActivity : BaseActivity() {
         }
         lvCustom.setOnClickListener{
             if(!TextUtils.isEmpty(edTime.text.toString())
-                && edTime.text.toString().toInt() > 10){
+                && edTime.text.toString().toInt() >= 1 ){
                 val minute = edTime.text.toString().toInt()
                 PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.DISPLAY_TIME_SECONDS,minute*60)
                 EventBus.getDefault().post(RefreshPageDataEvent("RefreshData"))

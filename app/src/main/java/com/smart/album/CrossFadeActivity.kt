@@ -269,6 +269,8 @@ class CrossFadeActivity : BasePlayActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        //清除定时关闭设置
+        PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.TIMER_MINUTES,0)
         // 清除 Handler 中的所有回调
         handler.removeCallbacksAndMessages(null)
         EventBus.getDefault().unregister(this)

@@ -110,21 +110,25 @@ class SettingTimerActivity : BaseActivity() {
     }
 
     fun divideAndMultiply(a: Long, b: Long): Int {
-        // 确保除数不为0，避免除零错误
-        require(b != 0L) { "Divisor cannot be zero" }
-        // 将Long转换为Double
-        val doubleA = a.toDouble()
-        val doubleB = b.toDouble()
-        // 执行除法运算
-        val divisionResult = doubleA / doubleB
-        // 保留两位小数
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.HALF_UP
-        val formattedResult = df.format(divisionResult).toDouble()
-        // 乘以100
-        val multipliedResult = formattedResult * 100
-        // 转换为整数
-        return multipliedResult.toInt()
+        try {
+            // 确保除数不为0，避免除零错误
+            require(b != 0L) { "Divisor cannot be zero" }
+            // 将Long转换为Double
+            val doubleA = a.toDouble()
+            val doubleB = b.toDouble()
+            // 执行除法运算
+            val divisionResult = doubleA / doubleB
+            // 保留两位小数
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.HALF_UP
+            val formattedResult = df.format(divisionResult).toDouble()
+            // 乘以100
+            val multipliedResult = formattedResult * 100
+            // 转换为整数
+            return multipliedResult.toInt()
+        } catch (e: Exception){
+            return 0
+        }
     }
 
 

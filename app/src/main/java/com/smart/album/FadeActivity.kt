@@ -102,7 +102,6 @@ class FadeActivity : BasePlayActivity() {
         displayEffect =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
         photoOrder =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.PHOTO_ORDER,0)
         musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
-        timerMinutes =  PreferencesHelper.getInstance(this@FadeActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
 
         imageUrls = getImagesFromFolder()
         adapter?.setNewData(imageUrls)
@@ -170,6 +169,8 @@ class FadeActivity : BasePlayActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        //清除定时关闭设置
+        PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.TIMER_MINUTES,0)
         if(runnable != null){
             handler?.removeCallbacks(runnable!!)
         }

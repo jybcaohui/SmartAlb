@@ -34,6 +34,7 @@
         <item>Hours</item>
     </string-array>
 
+    <string name="time_s_5">5 Seconds</string>
     <string name="time_s_10">10 Seconds</string>
     <string name="time_s_15">15 Seconds</string>
     <string name="time_s_30">30 Seconds</string>
@@ -41,7 +42,7 @@
     <string name="time_m_5">5 Minutes</string>
     <string name="time_m_10">10 Minutes</string>
     <string name="time_custom">Minutes</string>
-    <string name="time_toast">Please enter an integer greater than 10</string>
+    <string name="time_toast">Please enter an integer greater than 1</string>
 
 
     <string name="dis_effect_pan">Pan</string>

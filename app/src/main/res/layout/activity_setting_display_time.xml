@@ -10,6 +10,35 @@
     <include layout="@layout/layout_top_bar"/>
 
     <LinearLayout
+        android:id="@+id/lv_5s"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/btn_white_selecor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingHorizontal="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/black_66"
+            android:text="@string/time_s_5"/>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_right"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_ee"/>
+
+    <LinearLayout
         android:id="@+id/lv_10s"
         android:focusable="true"
         android:focusableInTouchMode="true"

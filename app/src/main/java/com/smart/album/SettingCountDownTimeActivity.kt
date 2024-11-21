@@ -92,7 +92,7 @@ class SettingCountDownTimeActivity : BaseActivity() {
         }
         lvCustom.setOnClickListener{
             if(!TextUtils.isEmpty(edTime.text.toString())
-                && edTime.text.toString().toInt() > 10){
+                && edTime.text.toString().toInt() >= 1){
                 val minute = edTime.text.toString().toInt()
                 PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.TIMER_MINUTES,minute)
                 App.instance.startCountdown()

@@ -37,7 +37,6 @@ open class BasePlayActivity : AppCompatActivity() {
     var displayEffect:Int = 0 //图片裁剪样式
     var transitionEffect:Int = 0 //图片切换动效
     var photoOrder:Int = 0 //文件排序
-    var timerMinutes: Int = 0 //运行时间（单位：分钟）
     var musicOn = false//背景音乐开启（否）
 
 
@@ -53,7 +52,6 @@ open class BasePlayActivity : AppCompatActivity() {
         transitionEffect =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.TRANSITION_EFFECT,0)
         photoOrder =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.PHOTO_ORDER,0)
         musicOn = PreferencesHelper.getInstance(this).getBoolean(PreferencesHelper.BG_MUSIC_ON,false)
-        timerMinutes =  PreferencesHelper.getInstance(this@BasePlayActivity).getInt(PreferencesHelper.TIMER_MINUTES,0)
 
         if(displaySeconds < 5000){
             displaySeconds = 5000
