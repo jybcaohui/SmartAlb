@@ -102,6 +102,9 @@ class CrossFadeActivity : BasePlayActivity() {
     }
 
     private fun initPageData(){
+        if(imageUrls.isNullOrEmpty()){
+            return
+        }
         displayEffect =  PreferencesHelper.getInstance(this).getInt(PreferencesHelper.DISPLAY_EFFECT,0)
         Log.d("initPageData===","initPageData==="+displayEffect)
 
