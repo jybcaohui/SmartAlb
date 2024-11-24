@@ -25,7 +25,6 @@
 <!--        <activity android:name=".FadeActivity"-->
 <!--        <activity android:name=".SlideActivity"-->
         <activity android:name=".WelcomeActivity"
-            android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/TransparentTheme">
@@ -36,39 +35,29 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
             android:theme="@style/TransparentTheme"/>
         <activity android:name=".FadeActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"/>
         <activity android:name=".CrossFadeActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"/>
         <activity android:name=".SettingActivity"
-            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingScheduleActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingTimerActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingDisplayTimeActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingDisplayEffectActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingTransitionEffectActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
         <activity android:name=".SettingCountDownTimeActivity"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Setting"/>
 

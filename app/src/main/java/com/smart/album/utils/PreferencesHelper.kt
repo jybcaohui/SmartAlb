@@ -24,7 +24,7 @@ class PreferencesHelper private constructor(context: Context) {
         const val SCHEDULE_START_ON = "schedule_start_on"
         const val SCHEDULE_STOP_TIME = "schedule_stop_time"
         const val SCHEDULE_STOP_ON = "schedule_stop_on"
-        const val SCREEN_ORIENTATION = "screen_orientation"
+        const val SCREEN_ORIENTATION = "screen_orientation"//2-横屏，1-竖屏，0-跟随系统
 
         @Volatile
         private var INSTANCE: PreferencesHelper? = null

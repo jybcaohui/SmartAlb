@@ -26,11 +26,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/trans_effect_fade"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -55,11 +50,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/trans_effect_cross"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -83,11 +73,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/trans_effect_memory"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View

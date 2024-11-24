@@ -40,6 +40,7 @@ class SettingActivity : BaseActivity() {
 
     private lateinit var rootLayout: LinearLayout
     private lateinit var imgBack: ImageView
+    private lateinit var img_sys_check: ImageView
     private lateinit var img_h_check: ImageView
     private lateinit var img_v_check: ImageView
     private lateinit var clDisplayTime: ConstraintLayout
@@ -48,6 +49,7 @@ class SettingActivity : BaseActivity() {
     private lateinit var clSchedules: ConstraintLayout
     private lateinit var clTimer: ConstraintLayout
     private lateinit var clSync: ConstraintLayout
+    private lateinit var clScreenSys: ConstraintLayout
     private lateinit var clScreenH: ConstraintLayout
     private lateinit var clScreenV: ConstraintLayout
 
@@ -131,18 +133,33 @@ class SettingActivity : BaseActivity() {
 //            listFiles()
 //        }
 
+        img_sys_check = findViewById(R.id.img_sys_check)
         img_h_check = findViewById(R.id.img_h_check)
         img_v_check = findViewById(R.id.img_v_check)
-        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==0){
+        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==2){
+            img_sys_check.visibility = View.GONE
             img_h_check.visibility = View.VISIBLE
             img_v_check.visibility = View.GONE
-        } else {
+        } else if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==1){
+            img_sys_check.visibility = View.GONE
             img_h_check.visibility = View.GONE
             img_v_check.visibility = View.VISIBLE
+        } else {
+            img_sys_check.visibility = View.VISIBLE
+            img_h_check.visibility = View.GONE
+            img_v_check.visibility = View.GONE
         }
+        clScreenSys = findViewById(R.id.cl_screen_sys)
+        clScreenSys.setOnClickListener{
+            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.SCREEN_ORIENTATION,0)
+            EventBus.getDefault().post(CloseCurrentEvent("close playing activity"))
+            startActivity(Intent(this@SettingActivity,WelcomeActivity::class.java))
+            finish()
+        }
+
         clScreenH = findViewById(R.id.cl_screen_h)
         clScreenH.setOnClickListener{
-            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.SCREEN_ORIENTATION,0)
+            PreferencesHelper.getInstance(this).saveInt(PreferencesHelper.SCREEN_ORIENTATION,2)
             EventBus.getDefault().post(CloseCurrentEvent("close playing activity"))
             startActivity(Intent(this@SettingActivity,WelcomeActivity::class.java))
             finish()

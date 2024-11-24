@@ -26,11 +26,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_s_5"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -55,11 +50,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_s_10"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -84,11 +74,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_s_15"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -112,11 +97,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_s_30"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -140,11 +120,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_m_1"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -168,11 +143,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_m_5"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -197,11 +167,6 @@
             android:gravity="left|center_vertical"
             android:textColor="@color/black_66"
             android:text="@string/time_m_10"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:src="@mipmap/ic_right"/>
     </LinearLayout>
 
     <View
@@ -242,11 +207,6 @@
                 android:gravity="left|center_vertical"
                 android:textColor="@color/black_66"
                 android:text="@string/time_custom"/>
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="10dp"
-                android:src="@mipmap/ic_right"/>
         </LinearLayout>
 
     </LinearLayout>

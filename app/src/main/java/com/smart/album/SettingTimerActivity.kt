@@ -32,14 +32,6 @@ class SettingTimerActivity : BaseActivity() {
     private lateinit var rvTimerProgress: RelativeLayout
     private lateinit var circularProgressIndicator: CircularProgressIndicator
     private var timerMinutes:Int = 0
-    private val timerOptions = listOf(
-        "Off",
-        "5 Minutes",
-        "15 Minutes",
-        "30 Minutes",
-        "1 hour",
-        "2 hours",
-        "Custom:")
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,12 +103,10 @@ class SettingTimerActivity : BaseActivity() {
 
     fun divideAndMultiply(a: Long, b: Long): Int {
         try {
-            // 确保除数不为0，避免除零错误
             require(b != 0L) { "Divisor cannot be zero" }
             // 将Long转换为Double
             val doubleA = a.toDouble()
             val doubleB = b.toDouble()
-            // 执行除法运算
             val divisionResult = doubleA / doubleB
             // 保留两位小数
             val df = DecimalFormat("#.##")

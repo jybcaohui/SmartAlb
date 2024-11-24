@@ -27,8 +27,10 @@ open class BaseActivity : AppCompatActivity() {
         // 添加到活动列表
         App.instance.addActivity(this)
 
-        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==0){
+        if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==2){
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else if(PreferencesHelper.getInstance(this).getInt(PreferencesHelper.SCREEN_ORIENTATION,0)==1){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
         }
     }
 
